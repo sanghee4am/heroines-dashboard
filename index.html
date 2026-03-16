@@ -426,14 +426,17 @@ const CAMPAIGN_STAGES=[{"name": "인플 디스커버리", "days": 3}, {"name": "
 <script>
 
 // ── Data Processing ──────────────────────────────────────────────────────
-const CREATORS = RAW_CREATORS.map((c,i) => {
-  const usedSlot = USED_BY_ID[c.tiktokId] !== undefined ? USED_BY_ID[c.tiktokId] : c.usedSlot;
-  const leftSlot = c.slotNum - usedSlot;
-  const bc = BC_SCORE_RAW[c.tiktokId] || null;
-  const campaignHistory = CAMPAIGN_LOG.filter(cl => cl.tiktokId === c.tiktokId);
-  const brandHistory    = BRAND_CONTACTS.filter(b => b.heroine === c.tiktokId || b.heroine === c.name);
-  return Object.assign({}, c, {id:i, usedSlot, leftSlot, bcScore:bc, campaignHistory, brandHistory});
-});
+function buildCreators() {
+  return RAW_CREATORS.map((c,i) => {
+    const usedSlot = USED_BY_ID[c.tiktokId] !== undefined ? USED_BY_ID[c.tiktokId] : c.usedSlot;
+    const leftSlot = c.slotNum - usedSlot;
+    const bc = BC_SCORE_RAW[c.tiktokId] || null;
+    const campaignHistory = CAMPAIGN_LOG.filter(cl => cl.tiktokId === c.tiktokId);
+    const brandHistory    = BRAND_CONTACTS.filter(b => b.heroine === c.tiktokId || b.heroine === c.name);
+    return Object.assign({}, c, {id:i, usedSlot, leftSlot, bcScore:bc, campaignHistory, brandHistory});
+  });
+}
+let CREATORS = buildCreators();
 
 function addDays(dateStr, n) {
   const d = new Date(dateStr); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10);
@@ -965,6 +968,9 @@ async function fetchLiveData() {
       Object.keys(STAGE_LEAD).forEach(k => delete STAGE_LEAD[k]);
       Object.assign(STAGE_LEAD, newStage);
     }
+
+    // CREATORS 재생성 (RAW_CREATORS 업데이트 반영)
+    CREATORS = buildCreators();
 
     buildDashboard(); buildInfluencer(); buildCampaigns(); buildWeekly();
 
