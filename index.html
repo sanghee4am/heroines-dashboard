@@ -864,32 +864,25 @@ function gvizUrl(sheetName) {
     '/gviz/tq?tqx=out:csv&sheet=' + encodeURIComponent(sheetName);
 }
 
-function parseCSV(text) {
-  const lines = text.trim().split('\n');
-  const headers = csvRow(lines[0]);
-  return lines.slice(1).map(l => {
-    const vals = csvRow(l);
-    const obj = {};
-    headers.forEach((h, i) => obj[h] = vals[i] || '');
-    return obj;
-  });
-}
-function csvRow(line) {
-  const res = []; let cur = ''; let inQ = false;
-  for (let i = 0; i < line.length; i++) {
-    const c = line[i];
+// 줄바꿈 포함 셀 처리 CSV 파서 → 행 배열(array of arrays) 반환
+function parseCSVRaw(text) {
+  const rows = [];
+  let cur = '', inQ = false, row = [];
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
     if (c === '"') { inQ = !inQ; continue; }
-    if (c === ',' && !inQ) { res.push(cur.trim()); cur = ''; continue; }
+    if (!inQ && c === ',') { row.push(cur.trim()); cur = ''; continue; }
+    if (!inQ && c === '\n') { row.push(cur.trim()); rows.push(row); row = []; cur = ''; continue; }
     cur += c;
   }
-  res.push(cur.trim());
-  return res;
+  if (row.length) { row.push(cur.trim()); rows.push(row); }
+  return rows;
 }
 
 async function fetchSheet(name) {
   const res = await fetch(gvizUrl(name));
   if (!res.ok) throw new Error(name + ' 시트 로드 실패');
-  return parseCSV(await res.text());
+  return parseCSVRaw(await res.text());
 }
 
 async function fetchLiveData() {
@@ -897,7 +890,6 @@ async function fetchLiveData() {
   const timeEl = document.getElementById('update-time');
   btn.classList.add('loading');
   try {
-    // 병렬로 모든 시트 fetch
     const [dbRows, logRows, bcRows, stageRows] = await Promise.all([
       fetchSheet('Heroines_DB'),
       fetchSheet('Campaign_Log'),
@@ -905,66 +897,51 @@ async function fetchLiveData() {
       fetchSheet('Settings_Stages'),
     ]);
 
-    // ── Heroines_DB 파싱 ──
-    const newCreators = dbRows.slice(1).map(r => { // 3행부터 (헤더2행 제외)
-      // 열 인덱스: col1=tiktokId, col2=name, col15=nextAction, col19=slotNum ...
-      const keys = Object.keys(r);
-      return {
-        tiktokId:     r[keys[1]] || '',
-        name:         r[keys[2]] || '',
-        nextAction:   r[keys[15]] || '',
-        slotNum:      parseInt(r[keys[19]]) || 0,
-        slotBA:       r[keys[21]] === 'TRUE',
-        slotMakeup:   r[keys[22]] === 'TRUE',
-        usedSlot:     parseInt(r[keys[23]]) || 0,
-        leftSlot:     parseInt(r[keys[24]]) || 0,
-        stage:        r[keys[26]] || '',
-        stageStart:   r[keys[27]] || '',
-        expectedBind: r[keys[28]] || '',
-        expectedWeek: r[keys[29]] || '',
-      };
-    }).filter(c => c.stage);
+    // ── Heroines_DB: 헤더 2행 → 3행(index 2)부터 데이터 ──
+    const newCreators = dbRows.slice(2).map(r => ({
+      tiktokId:     r[1]  || '',
+      name:         r[2]  || '',
+      nextAction:   r[15] || '',
+      slotNum:      parseInt(r[19]) || 0,
+      slotBA:       r[21] === 'TRUE',
+      slotMakeup:   r[22] === 'TRUE',
+      usedSlot:     parseInt(r[23]) || 0,
+      leftSlot:     parseInt(r[24]) || 0,
+      stage:        r[26] || '',
+      stageStart:   r[27] || '',
+      expectedBind: r[28] || '',
+      expectedWeek: r[29] || '',
+    })).filter(c => c.stage);
 
-    // ── Campaign_Log 파싱 ──
-    const newLog = logRows.map(r => {
-      const keys = Object.keys(r);
-      const slot = parseInt(r[keys[3]]);
+    // ── Campaign_Log: 헤더 1행 → 2행(index 1)부터 데이터 ──
+    const newLog = logRows.slice(1).map(r => {
+      const slot = parseInt(r[3]);
       if (isNaN(slot)) return null;
-      return {
-        date:     r[keys[0]] || '',
-        tiktokId: r[keys[1]] || '',
-        type:     r[keys[2]] || '',
-        slot,
-        fee:      parseInt(r[keys[4]]) || 0,
-        campaign: r[keys[5]] || '',
-      };
+      return { date: r[0]||'', tiktokId: r[1]||'', type: r[2]||'', slot, fee: parseInt(r[4])||0, campaign: r[5]||'' };
     }).filter(Boolean);
 
-    // ── BC_Score 파싱 ──
+    // ── BC_Score: 헤더 1행 → 2행(index 1)부터 ──
     const newBC = {};
-    bcRows.forEach(r => {
-      const keys = Object.keys(r);
-      const account = r[keys[1]]; if (!account) return;
-      const batch   = r[keys[0]]; if (!batch) return;
-      const wRes = [r[keys[6]], r[keys[10]], r[keys[14]], r[keys[18]]];
+    bcRows.slice(1).forEach(r => {
+      const batch = r[0], account = r[1];
+      if (!batch || !account) return;
+      const wRes = [r[6], r[10], r[14], r[18]];
       const last = [...wRes].reverse().find(v => v) || '미참여';
       if (!newBC[account] || batch > newBC[account].batch) {
         newBC[account] = {
           batch, latestResult: last,
           allResults: wRes.filter(v => v),
-          passed:  wRes.filter(v=>v==='통과').length,
-          dropped: wRes.filter(v=>v==='드랍').length,
-          warned:  wRes.filter(v=>v==='경고').length,
+          passed:  wRes.filter(v => v==='통과').length,
+          dropped: wRes.filter(v => v==='드랍').length,
+          warned:  wRes.filter(v => v==='경고').length,
         };
       }
     });
 
-    // ── Settings_Stages 파싱 ──
+    // ── Settings_Stages: 헤더 1행 → 2행(index 1)부터 ──
     const newStage = {};
-    stageRows.forEach(r => {
-      const keys = Object.keys(r);
-      const s = r[keys[0]]; if (!s) return;
-      newStage[s] = parseInt(r[keys[2]]) || 0;
+    stageRows.slice(1).forEach(r => {
+      if (r[0]) newStage[r[0]] = parseInt(r[2]) || 0;
     });
 
     // ── 전역 데이터 교체 ──
