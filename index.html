@@ -910,11 +910,11 @@ async function fetchLiveData() {
       slotMakeup:   r[22] === 'TRUE',
       usedSlot:     parseInt(r[23]) || 0,
       leftSlot:     parseInt(r[24]) || 0,
-      stage:        r[26] || '',
+      stage:        r[26] || '대기',
       stageStart:   r[27] || '',
       expectedBind: r[28] || '',
       expectedWeek: r[29] || '',
-    })).filter(c => c.stage);
+    })).filter(c => c.name);
 
     // ── Campaign_Log: 헤더 1행 → 2행(index 1)부터 데이터 ──
     const newLog = logRows.slice(1).map(r => {
