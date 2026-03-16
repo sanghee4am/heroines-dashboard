@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heroines Dashboard</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0f0f13;color:#e2e8f0;min-height:100vh}
+
+/* Header */
+.header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);border-bottom:1px solid #2d3748;padding:16px 24px;display:flex;align-items:center;gap:16px}
+.header-logo{font-size:22px;font-weight:800;background:linear-gradient(90deg,#f093fb,#f5576c,#fd9a00);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header-sub{color:#718096;font-size:13px}
+
+/* KPI Bar */
+.kpi-bar{display:flex;gap:12px;padding:16px 24px;background:#13131a;border-bottom:1px solid #1e2535;overflow-x:auto}
+.kpi-card{background:#1a1f2e;border:1px solid #2d3748;border-radius:10px;padding:12px 16px;min-width:110px;flex-shrink:0}
+.kpi-label{font-size:11px;color:#718096;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.kpi-value{font-size:20px;font-weight:700;color:#e2e8f0}
+.kpi-sub{font-size:11px;color:#4a5568;margin-top:2px}
+
+/* Tabs */
+.tabs{display:flex;gap:0;padding:0 24px;background:#13131a;border-bottom:1px solid #1e2535}
+.tab{padding:12px 20px;font-size:13px;font-weight:500;color:#718096;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}
+.tab.active{color:#f093fb;border-bottom-color:#f093fb}
+.tab:hover:not(.active){color:#e2e8f0}
+
+/* Main content */
+.main{padding:20px 24px}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* Stage columns */
+.pipeline-grid{display:flex;gap:12px;overflow-x:auto;align-items:flex-start;padding-bottom:8px}
+.stage-col{min-width:200px;max-width:220px;flex-shrink:0}
+.stage-header{border-radius:8px 8px 0 0;padding:10px 12px;font-size:12px;font-weight:700;letter-spacing:.5px;display:flex;justify-content:space-between;align-items:center}
+.stage-body{background:#1a1f2e;border:1px solid #2d3748;border-top:none;border-radius:0 0 8px 8px;padding:8px;display:flex;flex-direction:column;gap:6px;min-height:60px}
+
+/* Creator chip */
+.creator-chip{background:#0f1420;border:1px solid #2d3748;border-radius:6px;padding:8px 10px;cursor:pointer;transition:all .15s;position:relative}
+.creator-chip:hover{border-color:#f093fb;background:#16192a}
+.creator-chip .cn{font-size:13px;font-weight:600;color:#e2e8f0}
+.creator-chip .cid{font-size:11px;color:#4a5568;margin-top:1px}
+.creator-chip .badges{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap}
+.badge{font-size:10px;padding:2px 6px;border-radius:10px;font-weight:600}
+.badge-overdue{background:#7f1d1d;color:#fca5a5}
+.badge-ok{background:#14532d;color:#86efac}
+.badge-warn{background:#451a03;color:#fdba74}
+.badge-slot{background:#1e3a5f;color:#93c5fd}
+.badge-bc-pass{background:#14532d;color:#86efac}
+.badge-bc-warn{background:#451a03;color:#fdba74}
+.badge-bc-drop{background:#7f1d1d;color:#fca5a5}
+.badge-bc-none{background:#1e2535;color:#718096}
+
+/* Stage colors */
+.s-Bound{background:linear-gradient(90deg,#1d4ed8,#1e40af);color:#bfdbfe}
+.s-BindingOffered{background:linear-gradient(90deg,#7c3aed,#6d28d9);color:#ddd6fe}
+.s-Quality{background:linear-gradient(90deg,#b45309,#92400e);color:#fde68a}
+.s-Muga{background:linear-gradient(90deg,#0f766e,#0d5c54);color:#99f6e4}
+.s-USP{background:linear-gradient(90deg,#047857,#065f46);color:#a7f3d0}
+.s-Test{background:linear-gradient(90deg,#0369a1,#075985);color:#bae6fd}
+.s-Onboarding{background:linear-gradient(90deg,#4338ca,#3730a3);color:#c7d2fe}
+.s-Contacting{background:linear-gradient(90deg,#374151,#1f2937);color:#9ca3af}
+.s-Dropped{background:linear-gradient(90deg,#1f2937,#111827);color:#6b7280}
+
+/* Slots panel */
+.slots-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.slot-card{background:#1a1f2e;border:1px solid #2d3748;border-radius:10px;padding:14px;cursor:pointer;transition:all .15s}
+.slot-card:hover{border-color:#7c3aed;background:#1e2340}
+.slot-name{font-size:14px;font-weight:700;color:#e2e8f0}
+.slot-id{font-size:11px;color:#4a5568;margin-bottom:10px}
+.slot-bar-wrap{margin:8px 0 4px}
+.slot-bar-bg{background:#0f1420;border-radius:20px;height:8px;overflow:hidden}
+.slot-bar-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,#7c3aed,#f093fb);transition:width .3s}
+.slot-nums{display:flex;justify-content:space-between;font-size:11px;color:#718096}
+.slot-tags{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.tag{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600;background:#1e2535;color:#94a3b8}
+.tag-ba{background:#1e3a5f;color:#93c5fd}
+.tag-mk{background:#2d1b4e;color:#d8b4fe}
+.tag-full{background:#7f1d1d;color:#fca5a5}
+.tag-avail{background:#14532d;color:#86efac}
+
+/* Actions table */
+.actions-table{width:100%;border-collapse:collapse}
+.actions-table th{text-align:left;padding:10px 12px;font-size:11px;color:#718096;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #2d3748}
+.actions-table td{padding:10px 12px;font-size:13px;border-bottom:1px solid #1a1f2e;vertical-align:top}
+.actions-table tr:hover td{background:#1a1f2e}
+.clickable{cursor:pointer;color:#a78bfa;text-decoration:underline;text-underline-offset:2px}
+.overdue-row td{background:#1c1010}
+.pill{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600}
+.pill-overdue{background:#7f1d1d;color:#fca5a5}
+.pill-ok{background:#14532d;color:#86efac}
+.pill-contacting{background:#374151;color:#9ca3af}
+
+/* Campaigns tab */
+.section-title{font-size:14px;font-weight:700;color:#a78bfa;margin:20px 0 10px;text-transform:uppercase;letter-spacing:.5px}
+.section-title:first-child{margin-top:0}
+.camp-table{width:100%;border-collapse:collapse;margin-bottom:24px}
+.camp-table th{text-align:left;padding:8px 12px;font-size:11px;color:#718096;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #2d3748;background:#13131a}
+.camp-table td{padding:8px 12px;font-size:12px;border-bottom:1px solid #1a1f2e}
+.camp-table tr:hover td{background:#1a1f2e}
+.status-1{background:#1e3a5f;color:#93c5fd}
+.status-2{background:#14532d;color:#86efac}
+.status-drop{background:#7f1d1d;color:#fca5a5}
+.status-empty{background:#1e2535;color:#718096}
+.type-badge{display:inline-block;padding:2px 7px;border-radius:10px;font-size:11px;font-weight:600;background:#1e2535;color:#94a3b8}
+
+/* Donut chart */
+.donut-wrap{display:flex;align-items:center;gap:24px;flex-wrap:wrap;margin-bottom:20px}
+.donut{width:100px;height:100px;border-radius:50%;flex-shrink:0;position:relative}
+.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;color:#718096}
+.donut-center strong{font-size:18px;color:#e2e8f0;display:block}
+.donut-legend{display:flex;flex-direction:column;gap:6px}
+.legend-item{display:flex;align-items:center;gap:8px;font-size:12px}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+/* Side panel */
+#panel-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;display:none;opacity:0;transition:opacity .2s}
+#panel-backdrop.open{display:block;opacity:1}
+#side-panel{position:fixed;top:0;right:0;width:420px;max-width:95vw;height:100vh;background:#13131a;border-left:1px solid #2d3748;z-index:101;transform:translateX(100%);transition:transform .25s ease;overflow-y:auto}
+#side-panel.open{transform:translateX(0)}
+.panel-header{padding:20px;border-bottom:1px solid #2d3748;display:flex;justify-content:space-between;align-items:flex-start;position:sticky;top:0;background:#13131a;z-index:1}
+.panel-name{font-size:20px;font-weight:800;color:#e2e8f0}
+.panel-id{font-size:13px;color:#718096;margin-top:2px}
+.panel-close{background:none;border:none;color:#718096;font-size:22px;cursor:pointer;padding:4px 8px;border-radius:6px}
+.panel-close:hover{background:#1e2535;color:#e2e8f0}
+.panel-body{padding:20px}
+.panel-section{margin-bottom:20px}
+.panel-section-title{font-size:11px;font-weight:700;color:#718096;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+.panel-row{display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0;border-bottom:1px solid #1a1f2e;font-size:13px}
+.panel-row-label{color:#718096;flex-shrink:0;margin-right:12px}
+.panel-row-value{color:#e2e8f0;text-align:right;word-break:break-all}
+.stage-pill{display:inline-block;padding:3px 10px;border-radius:10px;font-size:12px;font-weight:700}
+.mini-table{width:100%;border-collapse:collapse;font-size:12px}
+.mini-table th{text-align:left;padding:5px 8px;color:#718096;border-bottom:1px solid #1e2535}
+.mini-table td{padding:5px 8px;border-bottom:1px solid #111}
+.empty-state{color:#4a5568;font-size:13px;padding:12px 0;text-align:center}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:#0f0f13}
+::-webkit-scrollbar-thumb{background:#2d3748;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#4a5568}
+</style>
+</head>
+<body>
+<script>
+const RAW_CREATORS = [{"tiktokId": "seoulgirllucy", "name": "한승주", "nextAction": "바인딩 완료(Active)", "slotNum": 5, "slotBA": true, "slotMakeup": true, "usedSlot": 0, "leftSlot": 5, "stage": "Bound", "stageStart": "", "expectedBind": "", "expectedWeek": ""}, {"tiktokId": "nayaglowy", "name": "김나영", "nextAction": "바인딩 완료(Active)", "slotNum": 5, "slotBA": true, "slotMakeup": true, "usedSlot": 0, "leftSlot": 5, "stage": "Bound", "stageStart": "", "expectedBind": "", "expectedWeek": ""}, {"tiktokId": "oh.na.na6", "name": "오나현", "nextAction": "바인딩 완료(Active)", "slotNum": 5, "slotBA": true, "slotMakeup": true, "usedSlot": 0, "leftSlot": 5, "stage": "Bound", "stageStart": "", "expectedBind": "", "expectedWeek": ""}, {"tiktokId": "lee.ria99", "name": "Realiza Lee", "nextAction": "바인딩 완료(Active)", "slotNum": 5, "slotBA": true, "slotMakeup": true, "usedSlot": 0, "leftSlot": 5, "stage": "Bound", "stageStart": "", "expectedBind": "", "expectedWeek": ""}, {"tiktokId": "dedededemo", "name": "권민선", "nextAction": "바인딩 완료(Active)", "slotNum": 5, "slotBA": true, "slotMakeup": true, "usedSlot": 0, "leftSlot": 5, "stage": "Bound", "stageStart": "", "expectedBind": "", "expectedWeek": ""}, {"tiktokId": "carolinednl_", "name": "KHEMMANIVANH CAROLINE DOUANGVILAY", "nextAction": "바인딩 완료(Active)", "slotNum": 5, "slotBA": true, "slotMakeup": false, "usedSlot": 0, "leftSlot": 5, "stage": "Bound", "stageStart": "", "expectedBind": "", "expectedWeek": ""}, {"tiktokId": "thekoreanclurb", "name": "장윤서", "nextAction": "바인딩 완료(Active)", "slotNum": 3, "slotBA": true, "slotMakeup": false, "usedSlot": 0, "leftSlot": 3, "stage": "Bound", "stageStart": "", "expectedBind": "", "expectedWeek": ""}, {"tiktokId": "mmmmaruyaa", "name": "박주아", "nextAction": "최종 계약 날인 확인", "slotNum": 4, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 4, "stage": "Binding Offered", "stageStart": "2026-02-23", "expectedBind": "2026-02-26", "expectedWeek": "2026-02-23"}, {"tiktokId": "joohee.kim71", "name": "김주희", "nextAction": "바인딩 완료(Active)", "slotNum": 5, "slotBA": true, "slotMakeup": true, "usedSlot": 0, "leftSlot": 5, "stage": "Bound", "stageStart": "2026-02-23", "expectedBind": "", "expectedWeek": ""}, {"tiktokId": "dianeonalleyy", "name": "권다인", "nextAction": "바인딩 완료(Active)", "slotNum": 5, "slotBA": true, "slotMakeup": false, "usedSlot": 0, "leftSlot": 5, "stage": "Bound", "stageStart": "2026-02-23", "expectedBind": "", "expectedWeek": ""}, {"tiktokId": "", "name": "김혜린", "nextAction": "결과 판정 및 다음 단계(무가/계약) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Quality", "stageStart": "2026-02-10", "expectedBind": "2026-03-01", "expectedWeek": "2026-02-23"}, {"tiktokId": "", "name": "이은선", "nextAction": "결과 판정 및 다음 단계(무가/계약) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Quality", "stageStart": "2026-02-10", "expectedBind": "2026-03-01", "expectedWeek": "2026-02-23"}, {"tiktokId": "", "name": "서진", "nextAction": "USP 테스트 시작", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Onboarding", "stageStart": "2026-02-13", "expectedBind": "2026-03-21", "expectedWeek": "2026-03-16"}, {"tiktokId": "", "name": "혜이미", "nextAction": "USP 테스트 시작", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Onboarding", "stageStart": "2026-03-02", "expectedBind": "2026-04-07", "expectedWeek": "2026-04-06"}, {"tiktokId": "", "name": "연지", "nextAction": "USP 테스트 시작", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Onboarding", "stageStart": "2026-02-04", "expectedBind": "2026-03-12", "expectedWeek": "2026-03-09"}, {"tiktokId": "chiarabeautycorner", "name": "Chiara Favretto", "nextAction": "테스트 캠페인 시작", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Onboarding", "stageStart": "2026-02-26", "expectedBind": "2026-03-15", "expectedWeek": "2026-03-09"}, {"tiktokId": "impaolager", "name": "impaolager", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-24", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "remadeinkorea", "name": "remadeinkorea", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-24", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "shot.by.lizaa_ugc", "name": "Yelyzaveta Batechko", "nextAction": "테스트 캠페인 시작", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Onboarding", "stageStart": "2026-02-26", "expectedBind": "2026-03-15", "expectedWeek": "2026-03-09"}, {"tiktokId": "basicallyenya", "name": "basicallyenya", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-24", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "lisasvloging", "name": "Alisa Ivaniuta", "nextAction": "테스트 캠페인 시작", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Onboarding", "stageStart": "2026-02-24", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "itsvik.ugc", "name": "itsvik.ugc", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-24", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "lliska_", "name": "lliska_", "nextAction": "테스트 캠페인 시작", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Onboarding", "stageStart": "2026-02-25", "expectedBind": "2026-03-14", "expectedWeek": "2026-03-09"}, {"tiktokId": "azyamad0", "name": "azyamad0", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-24", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "evevicste", "name": "evevicste", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-24", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "mel.logue_", "name": "Dugue Mellie Audrey Sophie", "nextAction": "드랍(종료)", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Dropped", "stageStart": "2026-02-24", "expectedBind": "", "expectedWeek": ""}, {"tiktokId": "shebert497", "name": "shebert497", "nextAction": "드랍(종료)", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Dropped", "stageStart": "2026-02-25", "expectedBind": "", "expectedWeek": ""}, {"tiktokId": "lorenfromseoul", "name": "lorenfromseoul", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-25", "expectedBind": "2026-03-14", "expectedWeek": "2026-03-09"}, {"tiktokId": "classysavhee", "name": "classysavhee", "nextAction": "드랍(종료)", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Dropped", "stageStart": "2026-02-25", "expectedBind": "", "expectedWeek": ""}, {"tiktokId": "lauucastel_", "name": "lauucastel_", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-26", "expectedBind": "2026-03-15", "expectedWeek": "2026-03-09"}, {"tiktokId": "", "name": "Azura Lee", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-25", "expectedBind": "2026-04-02", "expectedWeek": "2026-03-30"}, {"tiktokId": "", "name": "Hyun", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-25", "expectedBind": "2026-04-02", "expectedWeek": "2026-03-30"}, {"tiktokId": "", "name": "아뜰리옌", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-25", "expectedBind": "2026-04-02", "expectedWeek": "2026-03-30"}, {"tiktokId": "", "name": "어나더썸머", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-25", "expectedBind": "2026-04-02", "expectedWeek": "2026-03-30"}, {"tiktokId": "", "name": "Joy", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-25", "expectedBind": "2026-04-02", "expectedWeek": "2026-03-30"}, {"tiktokId": "", "name": "최유정", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-25", "expectedBind": "2026-04-02", "expectedWeek": "2026-03-30"}, {"tiktokId": "", "name": "김소영", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-25", "expectedBind": "2026-04-02", "expectedWeek": "2026-03-30"}, {"tiktokId": "", "name": "현뱌", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-25", "expectedBind": "2026-04-02", "expectedWeek": "2026-03-30"}, {"tiktokId": "", "name": "교만이KYOMANI", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-25", "expectedBind": "2026-04-02", "expectedWeek": "2026-03-30"}, {"tiktokId": "", "name": "wozoco 소담", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-25", "expectedBind": "2026-04-02", "expectedWeek": "2026-03-30"}, {"tiktokId": "", "name": "졍이", "nextAction": "드랍(종료)", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Dropped", "stageStart": "2026-02-25", "expectedBind": "", "expectedWeek": ""}, {"tiktokId": "", "name": "헤이한나", "nextAction": "드랍(종료)", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Dropped", "stageStart": "2026-02-25", "expectedBind": "", "expectedWeek": ""}, {"tiktokId": "annyeongmeri_", "name": "Meri", "nextAction": "USP 테스트 시작", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Onboarding", "stageStart": "2026-02-25", "expectedBind": "2026-04-02", "expectedWeek": "2026-03-30"}, {"tiktokId": "", "name": "유경 yukyung", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-25", "expectedBind": "2026-04-02", "expectedWeek": "2026-03-30"}, {"tiktokId": "", "name": "재아포핀스 JaeA Poppins", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-25", "expectedBind": "2026-04-02", "expectedWeek": "2026-03-30"}, {"tiktokId": "", "name": "Dazero", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-25", "expectedBind": "2026-04-02", "expectedWeek": "2026-03-30"}, {"tiktokId": "", "name": "ranaya_a", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-25", "expectedBind": "2026-04-02", "expectedWeek": "2026-03-30"}, {"tiktokId": "", "name": "motd_sudal", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-25", "expectedBind": "2026-04-02", "expectedWeek": "2026-03-30"}, {"tiktokId": "", "name": "youuuuuume", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-25", "expectedBind": "2026-04-02", "expectedWeek": "2026-03-30"}, {"tiktokId": "", "name": "haniqil", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-25", "expectedBind": "2026-04-02", "expectedWeek": "2026-03-30"}, {"tiktokId": "", "name": "e_wolly", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-25", "expectedBind": "2026-04-02", "expectedWeek": "2026-03-30"}, {"tiktokId": "", "name": "ellen__love_", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-25", "expectedBind": "2026-04-02", "expectedWeek": "2026-03-30"}, {"tiktokId": "", "name": "anha_motd", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-25", "expectedBind": "2026-04-02", "expectedWeek": "2026-03-30"}, {"tiktokId": "", "name": "hh_xxle", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-25", "expectedBind": "2026-04-02", "expectedWeek": "2026-03-30"}, {"tiktokId": "", "name": "hansuhyun_", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-25", "expectedBind": "2026-04-02", "expectedWeek": "2026-03-30"}, {"tiktokId": "", "name": "wnsgurrha", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-25", "expectedBind": "2026-04-02", "expectedWeek": "2026-03-30"}, {"tiktokId": "", "name": "gaeng_e_2", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-25", "expectedBind": "2026-04-02", "expectedWeek": "2026-03-30"}, {"tiktokId": "", "name": "dayoun08", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-25", "expectedBind": "2026-04-02", "expectedWeek": "2026-03-30"}, {"tiktokId": "", "name": "handy_j", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-25", "expectedBind": "2026-04-02", "expectedWeek": "2026-03-30"}, {"tiktokId": "", "name": "vuara_beauty", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-25", "expectedBind": "2026-04-02", "expectedWeek": "2026-03-30"}, {"tiktokId": "", "name": "for_youjin", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-25", "expectedBind": "2026-04-02", "expectedWeek": "2026-03-30"}, {"tiktokId": "", "name": "12_pyeong", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-25", "expectedBind": "2026-04-02", "expectedWeek": "2026-03-30"}, {"tiktokId": "", "name": "heyjolie1123", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-25", "expectedBind": "2026-03-14", "expectedWeek": "2026-03-09"}, {"tiktokId": "clov.lika", "name": "clov", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-24", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "", "name": "cyphorre", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-24", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "thelifeofho", "name": "Sophia Kim", "nextAction": "테스트 캠페인 시작", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Onboarding", "stageStart": "2026-02-24", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "", "name": "itsariannamarie", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-24", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "na_jaimin_", "name": "KASNAKIDOU IOANNA", "nextAction": "결과 판정 및 다음 단계(무가/계약) 안내", "slotNum": 3, "slotBA": false, "slotMakeup": true, "usedSlot": 0, "leftSlot": 3, "stage": "Quality", "stageStart": "2026-03-09", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "", "name": "hhyunjinlee", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-24", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "as.at05", "name": "as.at05", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-24", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "", "name": "mash_au", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-24", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "enhle_mashiane", "name": "enhle_mashiane", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-24", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "", "name": "jamugc", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-24", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "", "name": "jinnyugc", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-24", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "", "name": "alice.elevate", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-24", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "shot.by.lizaa_ugc", "name": "Yelyzaveta Batechko", "nextAction": "테스트 캠페인 시작", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Onboarding", "stageStart": "2026-02-24", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "vellavvlahj", "name": "조고은", "nextAction": "바인딩 완료(Active)", "slotNum": 5, "slotBA": false, "slotMakeup": true, "usedSlot": 1, "leftSlot": 4, "stage": "Bound", "stageStart": "2026-03-04", "expectedBind": "", "expectedWeek": ""}, {"tiktokId": "burrrsi", "name": "Chachkova Margarita", "nextAction": "최종 계약 날인 확인", "slotNum": 3, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 3, "stage": "Binding Offered", "stageStart": "2026-03-03", "expectedBind": "2026-03-06", "expectedWeek": "2026-03-02"}, {"tiktokId": "saintdollmina", "name": "El Yaagoubi Sabrina", "nextAction": "바인딩 완료(Active)", "slotNum": 3, "slotBA": true, "slotMakeup": true, "usedSlot": 0, "leftSlot": 3, "stage": "Bound", "stageStart": "2026-03-03", "expectedBind": "", "expectedWeek": ""}, {"tiktokId": "osk.bema", "name": "Begimai Oskonbaeva", "nextAction": "바인딩 완료(Active)", "slotNum": 5, "slotBA": true, "slotMakeup": false, "usedSlot": 1, "leftSlot": 4, "stage": "Bound", "stageStart": "2026-02-13", "expectedBind": "", "expectedWeek": ""}, {"tiktokId": "amyylandz", "name": "Amy Park", "nextAction": "테스트 캠페인 시작", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Onboarding", "stageStart": "2026-03-02", "expectedBind": "2026-03-19", "expectedWeek": "2026-03-16"}, {"tiktokId": "lifeinsk", "name": "WESLEY EBONY SHIRELL", "nextAction": "테스트 캠페인 시작", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Onboarding", "stageStart": "2026-02-13", "expectedBind": "2026-03-02", "expectedWeek": "2026-03-02"}, {"tiktokId": "zandube_", "name": "Zan Dube", "nextAction": "테스트 캠페인 시작", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Onboarding", "stageStart": "2026-02-13", "expectedBind": "2026-03-02", "expectedWeek": "2026-03-02"}, {"tiktokId": "moanasaruul", "name": "SARUULDALAI MUNKHJIN", "nextAction": "온보딩(커피챗) 안내", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Contacting", "stageStart": "2026-02-12", "expectedBind": "2026-03-01", "expectedWeek": "2026-02-23"}, {"tiktokId": "dani_daily18", "name": "Danice Irish Arias", "nextAction": "결과 판정 및 다음 단계(무가/계약) 안내", "slotNum": 3, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 3, "stage": "Quality", "stageStart": "2026-03-12", "expectedBind": "2026-03-16", "expectedWeek": "2026-03-16"}, {"tiktokId": "floralee1am", "name": "이지현", "nextAction": "드랍(종료)", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Dropped", "stageStart": "2026-03-09", "expectedBind": "", "expectedWeek": ""}, {"tiktokId": "grapegirlskincare", "name": "김지수", "nextAction": "결과 판정 및 다음 단계(무가/계약) 안내", "slotNum": 3, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 3, "stage": "Quality", "stageStart": "2026-03-12", "expectedBind": "2026-03-16", "expectedWeek": "2026-03-16"}, {"tiktokId": "immyouruna", "name": "구윤하", "nextAction": "결과 판정 및 다음 단계(무가/계약) 안내", "slotNum": 5, "slotBA": true, "slotMakeup": true, "usedSlot": 0, "leftSlot": 5, "stage": "Quality", "stageStart": "2026-03-09", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "jinjubilee", "name": "박진주", "nextAction": "결과 판정 및 다음 단계(무가/계약) 안내", "slotNum": 5, "slotBA": true, "slotMakeup": false, "usedSlot": 0, "leftSlot": 5, "stage": "Quality", "stageStart": "2026-03-09", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "beyssz_", "name": "Beyza Kocabal", "nextAction": "결과 판정 및 다음 단계(무가/계약) 안내", "slotNum": 3, "slotBA": false, "slotMakeup": true, "usedSlot": 0, "leftSlot": 3, "stage": "Quality", "stageStart": "2026-03-09", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "whymaryjane", "name": "Jane Clarissa", "nextAction": "결과 판정 및 다음 단계(무가/계약) 안내", "slotNum": 3, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 3, "stage": "Quality", "stageStart": "2026-03-09", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "Giuliacortorillo", "name": "Giulia Cortorillo", "nextAction": "결과 판정 및 다음 단계(무가/계약) 안내", "slotNum": 3, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 3, "stage": "Quality", "stageStart": "2026-03-09", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "xninabinna", "name": "Nina Victoria Arndt Jensen", "nextAction": "결과 판정 및 다음 단계(무가/계약) 안내", "slotNum": 3, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 3, "stage": "Quality", "stageStart": "2026-03-09", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "Juwon_sister", "name": "Precious Oluwajare Korede Ojo", "nextAction": "테스트 캠페인 시작", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Onboarding", "stageStart": "", "expectedBind": "", "expectedWeek": ""}, {"tiktokId": "may_notyourspring", "name": "Tin may Kyaw", "nextAction": "결과 판정 및 다음 단계(무가/계약) 안내", "slotNum": 3, "slotBA": false, "slotMakeup": true, "usedSlot": 0, "leftSlot": 3, "stage": "Quality", "stageStart": "2026-03-09", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "its.aloja", "name": "Ma Aloja Kasandra Tan Sario", "nextAction": "결과 판정 및 다음 단계(무가/계약) 안내", "slotNum": 3, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 3, "stage": "Quality", "stageStart": "2026-03-09", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "yumin01_", "name": "Yumin rai", "nextAction": "결과 판정 및 다음 단계(무가/계약) 안내", "slotNum": 3, "slotBA": false, "slotMakeup": true, "usedSlot": 0, "leftSlot": 3, "stage": "Quality", "stageStart": "2026-03-09", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "jaiixos", "name": "Jailiris DL", "nextAction": "결과 판정 및 다음 단계(무가/계약) 안내", "slotNum": 3, "slotBA": false, "slotMakeup": true, "usedSlot": 0, "leftSlot": 3, "stage": "Quality", "stageStart": "2026-03-09", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "ginnysidi", "name": "Ginny Sidi", "nextAction": "결과 판정 및 다음 단계(무가/계약) 안내", "slotNum": 3, "slotBA": false, "slotMakeup": true, "usedSlot": 0, "leftSlot": 3, "stage": "Quality", "stageStart": "2026-03-09", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "aris__di", "name": "SAIRA DUISHONBEKOVA", "nextAction": "결과 판정 및 다음 단계(무가/계약) 안내", "slotNum": 3, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 3, "stage": "Quality", "stageStart": "2026-03-09", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "sia.mellamo", "name": "김시아", "nextAction": "드랍(종료)", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Dropped", "stageStart": "2026-03-12", "expectedBind": "", "expectedWeek": ""}, {"tiktokId": "Biindo.k", "name": "Tlotlo Kgosilentswe", "nextAction": "테스트 캠페인 시작", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Onboarding", "stageStart": "2026-03-09", "expectedBind": "2026-03-26", "expectedWeek": "2026-03-23"}, {"tiktokId": "lemonadeinkorea", "name": "Maria Lamiita Lacatus", "nextAction": "테스트 캠페인 시작", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Onboarding", "stageStart": "2026-03-09", "expectedBind": "2026-03-26", "expectedWeek": "2026-03-23"}, {"tiktokId": "songcandyy", "name": "Phumelele Costance Ndlovu", "nextAction": "테스트 캠페인 시작", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Onboarding", "stageStart": "2026-03-09", "expectedBind": "2026-03-26", "expectedWeek": "2026-03-23"}, {"tiktokId": "Essinglee", "name": "Jeccel Lee", "nextAction": "테스트 캠페인 시작", "slotNum": 0, "slotBA": false, "slotMakeup": false, "usedSlot": 0, "leftSlot": 0, "stage": "Onboarding", "stageStart": "2026-03-09", "expectedBind": "2026-03-26", "expectedWeek": "2026-03-23"}, {"tiktokId": "heeya.y", "name": "양희윤", "nextAction": "결과 판정 및 다음 단계(무가/계약) 안내", "slotNum": 5, "slotBA": true, "slotMakeup": false, "usedSlot": 0, "leftSlot": 5, "stage": "Quality", "stageStart": "2026-03-09", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}, {"tiktokId": "yeonjinaahh", "name": "김연진", "nextAction": "결과 판정 및 다음 단계(무가/계약) 안내", "slotNum": 5, "slotBA": true, "slotMakeup": false, "usedSlot": 0, "leftSlot": 5, "stage": "Quality", "stageStart": "2026-03-09", "expectedBind": "2026-03-13", "expectedWeek": "2026-03-09"}];
+const STAGE_LEAD = {"Contacting": 1, "Onboarding": 3, "Test": 10, "USP": 14, "Muga": 14, "Quality": 1, "Binding Offered": 3, "Bound": 0};
+const CAMPAIGN_LOG = [{"date": "2026-02-28", "tiktokId": "whymaryjane", "type": "smallpaid", "slot": 1, "fee": 100000, "campaign": "Narka"}, {"date": "2026-03-05", "tiktokId": "vellavvlahj", "type": "smallpaid", "slot": 1, "fee": 150000, "campaign": "Narka"}, {"date": "2026-02-27", "tiktokId": "osk.bema", "type": "smallpaid", "slot": 1, "fee": 150000, "campaign": "Narka"}, {"date": "2026-03-12", "tiktokId": "immyouruna", "type": "smallpaid", "slot": 1, "fee": 150000, "campaign": "Narka"}, {"date": "2026-03-07", "tiktokId": "jinjubilee", "type": "smallpaid", "slot": 1, "fee": 80000, "campaign": "Narka"}, {"date": "2026-03-06", "tiktokId": "beyssz_", "type": "smallpaid", "slot": 1, "fee": 100000, "campaign": "Narka"}, {"date": "2026-02-27", "tiktokId": "Giuliacortorillo", "type": "smallpaid", "slot": 1, "fee": 100000, "campaign": "Narka"}, {"date": "", "tiktokId": "xninabinna", "type": "smallpaid", "slot": 1, "fee": 100000, "campaign": "Narka"}, {"date": "2026-03-04", "tiktokId": "na_jaimin_", "type": "smallpaid", "slot": 1, "fee": 100000, "campaign": "Narka"}, {"date": "2026-03-05", "tiktokId": "may_notyourspring", "type": "smallpaid", "slot": 1, "fee": 100000, "campaign": "Narka"}, {"date": "2026-03-11", "tiktokId": "its.aloja", "type": "smallpaid", "slot": 1, "fee": 100000, "campaign": "Narka"}, {"date": "2026-02-28", "tiktokId": "yumin01_", "type": "smallpaid", "slot": 1, "fee": 100000, "campaign": "Narka"}, {"date": "2026-03-04", "tiktokId": "jaiixos", "type": "smallpaid", "slot": 1, "fee": 100000, "campaign": "Narka"}, {"date": "2026-03-12", "tiktokId": "ginnysidi", "type": "smallpaid", "slot": 1, "fee": 100000, "campaign": "Narka"}, {"date": "2026-02-27", "tiktokId": "aris__di", "type": "smallpaid", "slot": 1, "fee": 100000, "campaign": "Narka"}, {"date": "2026-02-27", "tiktokId": "sia.mellamo", "type": "smallpaid", "slot": 1, "fee": 80000, "campaign": "Narka"}, {"date": "2026-03-10", "tiktokId": "heeya.y", "type": "smallpaid", "slot": 1, "fee": 103413, "campaign": "Narka"}, {"date": "2026-03-05", "tiktokId": "lee.ria99", "type": "smallpaid", "slot": 1, "fee": 40000, "campaign": "Narka"}, {"date": "2026-03-04", "tiktokId": "oh.na.na6", "type": "smallpaid", "slot": 1, "fee": 80000, "campaign": "Narka"}, {"date": "2026-03-18", "tiktokId": "yeonjinaahh", "type": "smallpaid", "slot": 1, "fee": 150000, "campaign": "Narka"}, {"date": "2026-03-22", "tiktokId": "chiarabeautycorner", "type": "smallpaid", "slot": 1, "fee": 100000, "campaign": "eyeworld"}, {"date": "2026-03-22", "tiktokId": "shot.by.lizaa_ugc", "type": "smallpaid", "slot": 1, "fee": 70000, "campaign": "eyeworld"}, {"date": "2026-03-22", "tiktokId": "lisasvloging", "type": "smallpaid", "slot": 1, "fee": 70000, "campaign": "eyeworld"}, {"date": "2026-03-22", "tiktokId": "lliska_", "type": "smallpaid", "slot": 1, "fee": 50000, "campaign": "eyeworld"}, {"date": "2026-03-22", "tiktokId": "seoulgirllucy", "type": "smallpaid", "slot": 1, "fee": 0, "campaign": "eyeworld"}, {"date": "2026-03-22", "tiktokId": "nayaglowy", "type": "smallpaid", "slot": 1, "fee": 0, "campaign": "eyeworld"}, {"date": "2026-03-22", "tiktokId": "oh.na.na6", "type": "smallpaid", "slot": 1, "fee": 0, "campaign": "eyeworld"}, {"date": "2026-03-22", "tiktokId": "lee.ria99", "type": "smallpaid", "slot": 1, "fee": 0, "campaign": "eyeworld"}, {"date": "2026-03-22", "tiktokId": "dedededemo", "type": "smallpaid", "slot": 1, "fee": 0, "campaign": "eyeworld"}, {"date": "2026-03-22", "tiktokId": "carolinednl_", "type": "smallpaid", "slot": 1, "fee": 0, "campaign": "eyeworld"}, {"date": "2026-03-22", "tiktokId": "thekoreanclurb", "type": "smallpaid", "slot": 1, "fee": 0, "campaign": "eyeworld"}, {"date": "2026-03-22", "tiktokId": "joohee.kim71", "type": "smallpaid", "slot": 1, "fee": 0, "campaign": "eyeworld"}, {"date": "2026-03-22", "tiktokId": "dianeonalleyy", "type": "smallpaid", "slot": 1, "fee": 0, "campaign": "eyeworld"}, {"date": "2026-03-22", "tiktokId": "as.at05", "type": "smallpaid", "slot": 1, "fee": 50000, "campaign": "eyeworld"}, {"date": "2026-03-22", "tiktokId": "amyylandz", "type": "smallpaid", "slot": 1, "fee": 100000, "campaign": "eyeworld"}, {"date": "2026-03-22", "tiktokId": "lifeinsk", "type": "smallpaid", "slot": 1, "fee": 100000, "campaign": "eyeworld"}, {"date": "2026-03-22", "tiktokId": "zandube_", "type": "smallpaid", "slot": 1, "fee": 100000, "campaign": "eyeworld"}, {"date": "2026-03-22", "tiktokId": "osk.bema", "type": "smallpaid", "slot": 1, "fee": 0, "campaign": "eyeworld"}, {"date": "2026-03-22", "tiktokId": "vellavvlahj", "type": "smallpaid", "slot": 1, "fee": 0, "campaign": "eyeworld"}, {"date": "2026-03-22", "tiktokId": "thelifeofho", "type": "smallpaid", "slot": 1, "fee": 100000, "campaign": "eyeworld"}];
+const USED_BY_ID = {"whymaryjane": 1, "vellavvlahj": 2, "osk.bema": 2, "immyouruna": 1, "jinjubilee": 1, "beyssz_": 1, "Giuliacortorillo": 1, "xninabinna": 1, "na_jaimin_": 1, "may_notyourspring": 1, "its.aloja": 1, "yumin01_": 1, "jaiixos": 1, "ginnysidi": 1, "aris__di": 1, "sia.mellamo": 1, "heeya.y": 1, "lee.ria99": 2, "oh.na.na6": 2, "yeonjinaahh": 1, "chiarabeautycorner": 1, "shot.by.lizaa_ugc": 1, "lisasvloging": 1, "lliska_": 1, "seoulgirllucy": 1, "nayaglowy": 1, "dedededemo": 1, "carolinednl_": 1, "thekoreanclurb": 1, "joohee.kim71": 1, "dianeonalleyy": 1, "as.at05": 1, "amyylandz": 1, "lifeinsk": 1, "zandube_": 1, "thelifeofho": 1};
+const BC_SCORE_RAW = {"kimmythequeen": {"batch": "BC_251115", "latestResult": "드랍", "allResults": ["드랍", "드랍", "드랍", "드랍"], "passed": 0, "dropped": 1, "warned": 0}, "wonjin744": {"batch": "BC_251229", "latestResult": "미참여", "allResults": ["미참여", "미루기권 사용", "미참여", "미참여"], "passed": 1, "dropped": 1, "warned": 1}, "joohee.kim71": {"batch": "BC_251229", "latestResult": "경고", "allResults": ["1K_Boost", "미루기권 사용", "퀄리티 미달", "경고"], "passed": 5, "dropped": 6, "warned": 4}, "j.lee5060": {"batch": "BC_251229", "latestResult": "미참여", "allResults": ["미참여", "미참여", "미참여", "미참여"], "passed": 10, "dropped": 9, "warned": 8}, "glowbyjunie20": {"batch": "BC_251229", "latestResult": "드랍", "allResults": ["드랍", "미루기권 사용", "드랍", "드랍"], "passed": 0, "dropped": 0, "warned": 0}, "minsground6": {"batch": "BC_260112", "latestResult": "미참여", "allResults": ["미참여", "미참여", "미참여", "미참여"], "passed": 0, "dropped": 0, "warned": 0}, "mincero0": {"batch": "BC_260112", "latestResult": "드랍", "allResults": ["미루기권 사용", "드랍", "드랍", "드랍"], "passed": 0, "dropped": 0, "warned": 0}, "itssoolife": {"batch": "BC_260112", "latestResult": "드랍", "allResults": ["미루기권 사용", "경고", "경고", "드랍"], "passed": 0, "dropped": 0, "warned": 0}, "luna_03021": {"batch": "BC_260112", "latestResult": "경고", "allResults": ["퀄리티 미달", "퀄리티 미달", "퀄리티 미달", "경고"], "passed": 0, "dropped": 0, "warned": 0}, "creambr34d": {"batch": "BC_260112", "latestResult": "드랍", "allResults": ["1K_Boost", "경고", "경고", "드랍"], "passed": 0, "dropped": 0, "warned": 0}, "nayaglowy": {"batch": "BC_260112", "latestResult": "드랍", "allResults": ["1K_Boost", "경고", "드랍", "드랍"], "passed": 0, "dropped": 0, "warned": 0}, "dani.kim46": {"batch": "BC_260112", "latestResult": "미참여", "allResults": ["미참여", "미참여", "미참여", "미참여"], "passed": 0, "dropped": 0, "warned": 0}, "adore7114": {"batch": "BC_260112", "latestResult": "드랍", "allResults": ["미루기권 사용", "미참여", "드랍", "드랍"], "passed": 0, "dropped": 0, "warned": 0}, "mmmmaruyaa": {"batch": "BC_260112", "latestResult": "드랍", "allResults": ["통과", "미루기권 사용", "퀄리티 미달", "드랍"], "passed": 0, "dropped": 0, "warned": 0}, "slowy.sna": {"batch": "BC_260119", "latestResult": "드랍", "allResults": ["경고", "드랍", "드랍", "드랍"], "passed": 0, "dropped": 0, "warned": 0}, "thekoreanclurb": {"batch": "BC_260119", "latestResult": "경고", "allResults": ["통과", "통과", "통과", "경고"], "passed": 0, "dropped": 0, "warned": 0}, "shay.glowy": {"batch": "BC_260119", "latestResult": "드랍", "allResults": ["드랍", "드랍", "드랍", "드랍"], "passed": 0, "dropped": 0, "warned": 0}, "seoulgirllucy": {"batch": "BC_260119", "latestResult": "경고", "allResults": ["1K_Boost", "경고", "드랍", "경고"], "passed": 0, "dropped": 0, "warned": 0}, "soooyeon05": {"batch": "BC_260119", "latestResult": "드랍", "allResults": ["미루기권 사용", "경고", "경고", "드랍"], "passed": 0, "dropped": 0, "warned": 0}, "dedededemo": {"batch": "BC_260119", "latestResult": "통과", "allResults": ["퀄리티 미달", "퀄리티 미달", "통과", "통과"], "passed": 0, "dropped": 0, "warned": 0}, "bu_nii0": {"batch": "BC_260119", "latestResult": "드랍", "allResults": ["드랍", "드랍", "드랍", "드랍"], "passed": 0, "dropped": 0, "warned": 0}, "chaehyeon051": {"batch": "BC_260119", "latestResult": "드랍", "allResults": ["통과", "경고", "드랍", "드랍"], "passed": 0, "dropped": 0, "warned": 0}, "glowith_allyoung": {"batch": "BC_260119", "latestResult": "드랍", "allResults": ["미루기권 사용", "경고", "경고", "드랍"], "passed": 0, "dropped": 0, "warned": 0}, "judyboo00": {"batch": "BC_260119", "latestResult": "드랍", "allResults": ["경고", "미루기권 사용", "드랍", "드랍"], "passed": 0, "dropped": 0, "warned": 0}, "hazelin_yj": {"batch": "BC_260119", "latestResult": "드랍", "allResults": ["경고", "드랍", "드랍", "드랍"], "passed": 0, "dropped": 0, "warned": 0}, "carolinednl_": {"batch": "BC_260119", "latestResult": "통과", "allResults": ["통과", "통과", "통과", "통과"], "passed": 0, "dropped": 0, "warned": 0}};
+const BRAND_CONTACTS = [{"date": "2025-07-22", "heroine": "glowykyo", "brand": "numbuzin", "agency": "", "category": "skincare", "prPaid": "PR", "ambassador": "", "fee": 0, "deliverable": "1.0", "status": "2. 진행 중"}, {"date": "2025-07-22", "heroine": "glowykyo", "brand": "anua", "agency": "", "category": "skincare", "prPaid": "PR", "ambassador": "ambassador", "fee": 0, "deliverable": "3.0", "status": "2. 진행 중"}, {"date": "2025-07-22", "heroine": "glowykyo", "brand": "aplb", "agency": "yesstyle", "category": "skincare", "prPaid": "PR", "ambassador": "affiliate", "fee": 0, "deliverable": "", "status": "드롭"}, {"date": "2025-07-21", "heroine": "glowykyo", "brand": "seleve", "agency": "jerrybeans", "category": "skincare", "prPaid": "PR", "ambassador": "", "fee": 0, "deliverable": "1.0", "status": "1. 신청 완료"}, {"date": "2025-07-18", "heroine": "glowykyo", "brand": "esther formula", "agency": "jerrybeans", "category": "skincare", "prPaid": "PR", "ambassador": "", "fee": 0, "deliverable": "1.0", "status": "1. 신청 완료"}, {"date": "2025-07-18", "heroine": "glowykyo", "brand": "centellian24", "agency": "", "category": "skincare", "prPaid": "PR", "ambassador": "", "fee": 0, "deliverable": "1.0", "status": "2. 진행 중"}, {"date": "2025-07-18", "heroine": "glowykyo", "brand": "house of balance", "agency": "", "category": "skincare", "prPaid": "PR", "ambassador": "ambassador", "fee": 0, "deliverable": "1.0", "status": "2. 진행 중"}, {"date": "2025-07-18", "heroine": "glowykyo", "brand": "vt cosmetics", "agency": "", "category": "skincare", "prPaid": "PR", "ambassador": "", "fee": 0, "deliverable": "1.0", "status": "1. 신청 완료"}, {"date": "2025-07-18", "heroine": "glowykyo", "brand": "ulooin", "agency": "", "category": "skincare", "prPaid": "PR", "ambassador": "ambassador", "fee": 0, "deliverable": "2.0", "status": "1. 신청 완료"}, {"date": "2025-07-23", "heroine": "glowykyo", "brand": "frankly", "agency": "", "category": "skincare", "prPaid": "PR", "ambassador": "", "fee": 0, "deliverable": "1.0", "status": "드롭"}, {"date": "2025-07-28", "heroine": "glowykyo", "brand": "cell fusion c", "agency": "", "category": "skincare", "prPaid": "PR", "ambassador": "ambassador", "fee": 0, "deliverable": "", "status": "드롭"}, {"date": "2025-07-31", "heroine": "glowykyo", "brand": "esther formula", "agency": "jerrybeans", "category": "skincare", "prPaid": "Paid", "ambassador": "", "fee": 0, "deliverable": "1.0", "status": ""}, {"date": "2025-07-31", "heroine": "glowykyo", "brand": "dr.g", "agency": "", "category": "skincare", "prPaid": "PR", "ambassador": "", "fee": 0, "deliverable": "1.0", "status": ""}, {"date": "2025-08-04", "heroine": "hoonyo", "brand": "esther formula", "agency": "jerrybeans", "category": "skincare", "prPaid": "PR", "ambassador": "", "fee": 0, "deliverable": "1.0", "status": "1. 신청 완료"}, {"date": "2025-07-30", "heroine": "hoonyo", "brand": "fation", "agency": "", "category": "skincare", "prPaid": "PR", "ambassador": "", "fee": 0, "deliverable": "1.0", "status": "2. 진행 중"}, {"date": "2025-08-06", "heroine": "glowykyo", "brand": "hwahe", "agency": "", "category": "skincare", "prPaid": "PR", "ambassador": "ambassador", "fee": 0, "deliverable": "1.0", "status": "1. 신청 완료"}, {"date": "2025-08-06", "heroine": "kimmythequeen", "brand": "soonding", "agency": "", "category": "skincare", "prPaid": "PR", "ambassador": "", "fee": 0, "deliverable": "1.0", "status": "1. 신청 완료"}, {"date": "2025-08-06", "heroine": "glowykyo", "brand": "soonding", "agency": "", "category": "skincare", "prPaid": "PR", "ambassador": "", "fee": 0, "deliverable": "1.0", "status": "1. 신청 완료"}, {"date": "2025-08-07", "heroine": "kimmythequeen", "brand": "dr.rejuall", "agency": "", "category": "skincare", "prPaid": "PR", "ambassador": "", "fee": 0, "deliverable": "1.0", "status": "1. 신청 완료"}];
+</script>
+
+<div class="header">
+  <div class="header-logo">✦ Heroines</div>
+  <div class="header-sub">인플루언서 운영 대시보드</div>
+</div>
+
+<div class="kpi-bar" id="kpi-bar"></div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('pipeline')">Pipeline</div>
+  <div class="tab" onclick="switchTab('slots')">Slots</div>
+  <div class="tab" onclick="switchTab('actions')">Actions</div>
+  <div class="tab" onclick="switchTab('campaigns')">Campaigns</div>
+</div>
+
+<div class="main">
+  <div class="tab-panel active" id="tab-pipeline">
+    <div class="pipeline-grid" id="pipeline-grid"></div>
+  </div>
+  <div class="tab-panel" id="tab-slots">
+    <div class="slots-grid" id="slots-grid"></div>
+  </div>
+  <div class="tab-panel" id="tab-actions">
+    <div id="actions-container"></div>
+  </div>
+  <div class="tab-panel" id="tab-campaigns">
+    <div id="campaigns-container"></div>
+  </div>
+</div>
+
+<div id="panel-backdrop" onclick="closePanel()"></div>
+<div id="side-panel">
+  <div class="panel-header">
+    <div>
+      <div class="panel-name" id="panel-name"></div>
+      <div class="panel-id" id="panel-tiktok-id"></div>
+    </div>
+    <button class="panel-close" onclick="closePanel()">✕</button>
+  </div>
+  <div class="panel-body" id="panel-body"></div>
+</div>
+
+<script>
+// ---- Process creators ----
+const CREATORS = RAW_CREATORS.map((c, i) => {
+  const usedSlot = USED_BY_ID[c.tiktokId] !== undefined ? USED_BY_ID[c.tiktokId] : c.usedSlot;
+  const leftSlot = c.slotNum - usedSlot;
+  const bcKey = c.tiktokId || '';
+  const bcScore = BC_SCORE_RAW[bcKey] || null;
+  const campaignHistory = CAMPAIGN_LOG.filter(cl => cl.tiktokId === c.tiktokId);
+  const brandHistory = BRAND_CONTACTS.filter(b => b.heroine === c.tiktokId || b.heroine === c.name);
+  return Object.assign({}, c, { id: i, usedSlot, leftSlot, bcScore, campaignHistory, brandHistory });
+});
+
+// ---- Helpers ----
+function today() { return new Date().toISOString().slice(0,10); }
+
+function daysSince(dateStr) {
+  if (!dateStr) return null;
+  const d = new Date(dateStr);
+  if (isNaN(d)) return null;
+  return Math.floor((Date.now() - d.getTime()) / 86400000);
+}
+
+function isOverdue(c) {
+  const lead = STAGE_LEAD[c.stage];
+  if (lead === null || lead === undefined) return false;
+  const days = daysSince(c.stageStart);
+  if (days === null) return false;
+  return days > lead;
+}
+
+function stageClass(stage) {
+  const map = {
+    'Bound':'s-Bound','Binding Offered':'s-BindingOffered','Quality':'s-Quality',
+    'Muga':'s-Muga','USP':'s-USP','Test':'s-Test','Onboarding':'s-Onboarding',
+    'Contacting':'s-Contacting','Dropped':'s-Dropped'
+  };
+  return map[stage] || 's-Contacting';
+}
+
+function stageOrder() {
+  return ['Bound','Binding Offered','Quality','Muga','USP','Test','Onboarding','Contacting','Dropped'];
+}
+
+function fmtFee(n) {
+  if (!n) return '-';
+  if (n >= 10000) return (n/10000).toFixed(0) + '만원';
+  return n.toLocaleString() + '원';
+}
+
+function fmtDate(s) {
+  if (!s) return '-';
+  return String(s).slice(0,10);
+}
+
+function bcBadgeHtml(bc) {
+  if (!bc) return '';
+  const r = bc.latestResult;
+  const cls = r === '통과' ? 'badge-bc-pass' : r === '경고' ? 'badge-bc-warn' : r === '드랍' ? 'badge-bc-drop' : 'badge-bc-none';
+  return '<span class="badge ' + cls + '">BC:' + r + '</span>';
+}
+
+// ---- KPI Bar ----
+function buildKpi() {
+  const active = CREATORS.filter(c => c.stage !== 'Dropped');
+  const bound = CREATORS.filter(c => c.stage === 'Bound').length;
+  const bindOff = CREATORS.filter(c => c.stage === 'Binding Offered').length;
+  const quality = CREATORS.filter(c => c.stage === 'Quality').length;
+  const overdue = CREATORS.filter(c => isOverdue(c) && c.stage !== 'Dropped').length;
+  const totalRevenue = CAMPAIGN_LOG.reduce((s,cl) => s + (cl.fee || 0), 0);
+  const totalSlots = CREATORS.filter(c => c.stage === 'Bound').reduce((s,c) => s + (c.slotNum || 0), 0);
+  const usedSlots = CREATORS.filter(c => c.stage === 'Bound').reduce((s,c) => s + (c.usedSlot || 0), 0);
+
+  const items = [
+    {label:'전체 크리에이터', value: active.length, sub:'active'},
+    {label:'Bound', value: bound, sub:'바인딩 완료'},
+    {label:'Binding Offered', value: bindOff, sub:'오퍼 전달'},
+    {label:'Quality', value: quality, sub:'품질 검토'},
+    {label:'연체 중', value: overdue, sub:'overdue'},
+    {label:'총 캠페인 수익', value: fmtFee(totalRevenue), sub: CAMPAIGN_LOG.length + '건'},
+    {label:'슬롯 사용률', value: totalSlots ? Math.round(usedSlots/totalSlots*100)+'%' : '-', sub: usedSlots + '/' + totalSlots},
+  ];
+
+  document.getElementById('kpi-bar').innerHTML = items.map(k =>
+    '<div class="kpi-card"><div class="kpi-label">' + k.label + '</div>' +
+    '<div class="kpi-value">' + k.value + '</div>' +
+    '<div class="kpi-sub">' + k.sub + '</div></div>'
+  ).join('');
+}
+
+// ---- Pipeline Tab ----
+function buildPipeline() {
+  const groups = {};
+  stageOrder().forEach(s => groups[s] = []);
+  CREATORS.forEach(c => { if (groups[c.stage]) groups[c.stage].push(c); });
+
+  const grid = document.getElementById('pipeline-grid');
+  grid.innerHTML = stageOrder().map(stage => {
+    const list = groups[stage] || [];
+    const sc = stageClass(stage);
+    const chips = list.map(c => {
+      const od = isOverdue(c);
+      const bcH = (stage === 'Quality' || stage === 'Binding Offered') ? bcBadgeHtml(c.bcScore) : '';
+      return '<div class="creator-chip" onclick="openPanel(' + c.id + ')">' +
+        '<div class="cn">' + (c.name || c.tiktokId || '?') + '</div>' +
+        '<div class="cid">@' + (c.tiktokId || '') + '</div>' +
+        '<div class="badges">' +
+          (od ? '<span class="badge badge-overdue">연체</span>' : '') +
+          bcH +
+          (c.leftSlot > 0 ? '<span class="badge badge-slot">' + c.leftSlot + '슬롯</span>' : '') +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    return '<div class="stage-col">' +
+      '<div class="stage-header ' + sc + '">' +
+        '<span>' + stage + '</span>' +
+        '<span>' + list.length + '</span>' +
+      '</div>' +
+      '<div class="stage-body">' + (chips || '<div style="color:#4a5568;font-size:12px;padding:8px">없음</div>') + '</div>' +
+    '</div>';
+  }).join('');
+}
+
+// ---- Slots Tab ----
+function buildSlots() {
+  const bound = CREATORS.filter(c => c.stage === 'Bound' || c.stage === 'Binding Offered');
+  bound.sort((a,b) => {
+    const af = a.slotNum ? a.usedSlot/a.slotNum : 0;
+    const bf = b.slotNum ? b.usedSlot/b.slotNum : 0;
+    return bf - af;
+  });
+
+  document.getElementById('slots-grid').innerHTML = bound.map(c => {
+    const pct = c.slotNum ? Math.min(100, Math.round(c.usedSlot / c.slotNum * 100)) : 0;
+    const isFull = c.leftSlot <= 0;
+    return '<div class="slot-card" onclick="openPanel(' + c.id + ')">' +
+      '<div class="slot-name">' + (c.name || c.tiktokId) + '</div>' +
+      '<div class="slot-id">@' + (c.tiktokId || '') + '</div>' +
+      '<div class="slot-bar-wrap">' +
+        '<div class="slot-bar-bg"><div class="slot-bar-fill" style="width:' + pct + '%"></div></div>' +
+      '</div>' +
+      '<div class="slot-nums"><span>사용: ' + c.usedSlot + '</span><span>총: ' + c.slotNum + '슬롯</span></div>' +
+      '<div class="slot-tags">' +
+        (c.slotBA ? '<span class="tag tag-ba">뷰티앤</span>' : '') +
+        (c.slotMakeup ? '<span class="tag tag-mk">메이크업</span>' : '') +
+        (isFull ? '<span class="tag tag-full">슬롯 소진</span>' : '<span class="tag tag-avail">' + c.leftSlot + '슬롯 가용</span>') +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+// ---- Actions Tab ----
+function buildActions() {
+  const active = CREATORS.filter(c => c.stage !== 'Dropped' && c.nextAction);
+  active.sort((a,b) => {
+    const ao = isOverdue(a) ? 0 : 1;
+    const bo = isOverdue(b) ? 0 : 1;
+    return ao - bo;
+  });
+
+  const rows = active.map(c => {
+    const od = isOverdue(c);
+    const days = daysSince(c.stageStart);
+    const lead = STAGE_LEAD[c.stage];
+    const daysStr = days !== null ? days + '일' : '-';
+    const limitStr = lead !== null && lead !== undefined ? '/' + lead + '일' : '';
+    return '<tr class="' + (od ? 'overdue-row' : '') + '">' +
+      '<td><span class="clickable" onclick="openPanel(' + c.id + ')">' + (c.name || c.tiktokId) + '<br><span style="font-size:11px;color:#4a5568">@' + (c.tiktokId||'') + '</span></span></td>' +
+      '<td><span class="stage-pill ' + stageClass(c.stage) + '">' + c.stage + '</span></td>' +
+      '<td>' + (c.nextAction || '-') + '</td>' +
+      '<td><span class="pill ' + (od ? 'pill-overdue' : 'pill-ok') + '">' + daysStr + limitStr + '</span></td>' +
+      '<td>' + fmtDate(c.stageStart) + '</td>' +
+    '</tr>';
+  }).join('');
+
+  document.getElementById('actions-container').innerHTML =
+    '<table class="actions-table">' +
+    '<thead><tr><th>크리에이터</th><th>스테이지</th><th>Next Action</th><th>경과/한도</th><th>시작일</th></tr></thead>' +
+    '<tbody>' + rows + '</tbody>' +
+    '</table>';
+}
+
+// ---- Campaigns Tab ----
+function buildCampaigns() {
+  // Campaign Log table
+  const campRows = CAMPAIGN_LOG.map(cl => {
+    const creator = CREATORS.find(c => c.tiktokId === cl.tiktokId);
+    const cName = creator ? creator.name : cl.tiktokId;
+    return '<tr>' +
+      '<td>' + fmtDate(cl.date) + '</td>' +
+      '<td><span class="clickable" onclick="openPanel(' + (creator ? creator.id : -1) + ')">' + cName + '<br><span style="font-size:10px;color:#4a5568">@' + cl.tiktokId + '</span></span></td>' +
+      '<td><span class="type-badge">' + (cl.type||'-') + '</span></td>' +
+      '<td>' + (cl.slot || '-') + '</td>' +
+      '<td>' + fmtFee(cl.fee) + '</td>' +
+      '<td>' + (cl.campaign || '-') + '</td>' +
+    '</tr>';
+  }).join('');
+
+  // Brand contacts table
+  const statusPill = (s) => {
+    if (!s) return '<span class="pill status-empty">-</span>';
+    if (s.startsWith('1.')) return '<span class="pill status-1">' + s + '</span>';
+    if (s.startsWith('2.')) return '<span class="pill status-2">' + s + '</span>';
+    if (s === '드롭') return '<span class="pill status-drop">드롭</span>';
+    return '<span class="pill status-empty">' + s + '</span>';
+  };
+
+  const brandRows = BRAND_CONTACTS.map(b => {
+    const creator = CREATORS.find(c => c.tiktokId === b.heroine || c.name === b.heroine);
+    const cName = creator ? creator.name : b.heroine;
+    return '<tr>' +
+      '<td>' + fmtDate(b.date) + '</td>' +
+      '<td>' + (creator ? '<span class="clickable" onclick="openPanel(' + creator.id + ')">' + cName + '</span>' : cName) + '</td>' +
+      '<td>' + (b.brand || '-') + '</td>' +
+      '<td>' + (b.prPaid || '-') + '</td>' +
+      '<td>' + fmtFee(b.fee) + '</td>' +
+      '<td>' + statusPill(b.status) + '</td>' +
+    '</tr>';
+  }).join('');
+
+  document.getElementById('campaigns-container').innerHTML =
+    '<div class="section-title">캠페인 로그 (Campaign_Log)</div>' +
+    '<table class="camp-table">' +
+    '<thead><tr><th>날짜</th><th>크리에이터</th><th>타입</th><th>슬롯</th><th>피</th><th>캠페인</th></tr></thead>' +
+    '<tbody>' + campRows + '</tbody>' +
+    '</table>' +
+    '<div class="section-title">브랜드 연락 (브랜드 연락)</div>' +
+    '<table class="camp-table">' +
+    '<thead><tr><th>날짜</th><th>크리에이터</th><th>브랜드</th><th>PR/Paid</th><th>피</th><th>상태</th></tr></thead>' +
+    '<tbody>' + brandRows + '</tbody>' +
+    '</table>';
+}
+
+// ---- Tab switching ----
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    const tabs = ['pipeline','slots','actions','campaigns'];
+    t.classList.toggle('active', tabs[i] === name);
+  });
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+// ---- Side Panel ----
+function openPanel(creatorId) {
+  const c = CREATORS.find(x => x.id === creatorId);
+  if (!c) return;
+
+  document.getElementById('panel-name').textContent = c.name || c.tiktokId || '?';
+  document.getElementById('panel-tiktok-id').textContent = '@' + (c.tiktokId || '');
+
+  const od = isOverdue(c);
+  const days = daysSince(c.stageStart);
+  const lead = STAGE_LEAD[c.stage];
+
+  // Basic info
+  let html = '<div class="panel-section">';
+  html += '<div class="panel-section-title">기본 정보</div>';
+  html += '<div class="panel-row"><span class="panel-row-label">Stage</span><span class="panel-row-value"><span class="stage-pill ' + stageClass(c.stage) + '">' + c.stage + '</span>' + (od ? ' <span class="badge badge-overdue">연체</span>' : '') + '</span></div>';
+  html += '<div class="panel-row"><span class="panel-row-label">Stage 시작</span><span class="panel-row-value">' + fmtDate(c.stageStart) + (days !== null ? ' (' + days + '일 경과)' : '') + '</span></div>';
+  if (lead !== null && lead !== undefined) {
+    html += '<div class="panel-row"><span class="panel-row-label">Stage 한도</span><span class="panel-row-value">' + lead + '일</span></div>';
+  }
+  html += '<div class="panel-row"><span class="panel-row-label">Next Action</span><span class="panel-row-value">' + (c.nextAction || '-') + '</span></div>';
+  html += '<div class="panel-row"><span class="panel-row-label">Expected Bind</span><span class="panel-row-value">' + (c.expectedBind || '-') + '</span></div>';
+  html += '<div class="panel-row"><span class="panel-row-label">Expected Week</span><span class="panel-row-value">' + (c.expectedWeek || '-') + '</span></div>';
+  html += '</div>';
+
+  // Slots
+  html += '<div class="panel-section">';
+  html += '<div class="panel-section-title">슬롯 현황</div>';
+  html += '<div class="panel-row"><span class="panel-row-label">총 슬롯</span><span class="panel-row-value">' + c.slotNum + '</span></div>';
+  html += '<div class="panel-row"><span class="panel-row-label">사용 슬롯</span><span class="panel-row-value">' + c.usedSlot + '</span></div>';
+  html += '<div class="panel-row"><span class="panel-row-label">잔여 슬롯</span><span class="panel-row-value">' + c.leftSlot + '</span></div>';
+  html += '<div class="panel-row"><span class="panel-row-label">뷰티앤</span><span class="panel-row-value">' + (c.slotBA ? '✓' : '✗') + '</span></div>';
+  html += '<div class="panel-row"><span class="panel-row-label">메이크업</span><span class="panel-row-value">' + (c.slotMakeup ? '✓' : '✗') + '</span></div>';
+  html += '</div>';
+
+  // BC Score
+  if (c.bcScore) {
+    const bc = c.bcScore;
+    html += '<div class="panel-section">';
+    html += '<div class="panel-section-title">BC Score</div>';
+    html += '<div class="panel-row"><span class="panel-row-label">배치</span><span class="panel-row-value">' + bc.batch + '</span></div>';
+    html += '<div class="panel-row"><span class="panel-row-label">최근 결과</span><span class="panel-row-value">' + bcBadgeHtml(bc) + '</span></div>';
+    html += '<div class="panel-row"><span class="panel-row-label">통과/경고/드랍</span><span class="panel-row-value">' + bc.passed + '/' + bc.warned + '/' + bc.dropped + '</span></div>';
+    html += '<div class="panel-row"><span class="panel-row-label">결과 이력</span><span class="panel-row-value">' + (bc.allResults || []).join(' → ') + '</span></div>';
+    html += '</div>';
+  }
+
+  // Campaign history
+  html += '<div class="panel-section">';
+  html += '<div class="panel-section-title">캠페인 이력 (' + c.campaignHistory.length + '건)</div>';
+  if (c.campaignHistory.length > 0) {
+    html += '<table class="mini-table"><thead><tr><th>날짜</th><th>캠페인</th><th>타입</th><th>슬롯</th><th>피</th></tr></thead><tbody>';
+    html += c.campaignHistory.map(cl =>
+      '<tr><td>' + fmtDate(cl.date) + '</td><td>' + (cl.campaign||'-') + '</td><td>' + (cl.type||'-') + '</td><td>' + (cl.slot||'-') + '</td><td>' + fmtFee(cl.fee) + '</td></tr>'
+    ).join('');
+    html += '</tbody></table>';
+  } else {
+    html += '<div class="empty-state">캠페인 이력 없음</div>';
+  }
+  html += '</div>';
+
+  // Brand history
+  html += '<div class="panel-section">';
+  html += '<div class="panel-section-title">브랜드 연락 이력 (' + c.brandHistory.length + '건)</div>';
+  if (c.brandHistory.length > 0) {
+    html += '<table class="mini-table"><thead><tr><th>날짜</th><th>브랜드</th><th>PR/Paid</th><th>피</th><th>상태</th></tr></thead><tbody>';
+    html += c.brandHistory.map(b =>
+      '<tr><td>' + fmtDate(b.date) + '</td><td>' + (b.brand||'-') + '</td><td>' + (b.prPaid||'-') + '</td><td>' + fmtFee(b.fee) + '</td><td>' + (b.status||'-') + '</td></tr>'
+    ).join('');
+    html += '</tbody></table>';
+  } else {
+    html += '<div class="empty-state">브랜드 연락 이력 없음</div>';
+  }
+  html += '</div>';
+
+  document.getElementById('panel-body').innerHTML = html;
+  document.getElementById('panel-backdrop').classList.add('open');
+  document.getElementById('side-panel').classList.add('open');
+}
+
+function closePanel() {
+  document.getElementById('panel-backdrop').classList.remove('open');
+  document.getElementById('side-panel').classList.remove('open');
+}
+
+// ---- Init ----
+buildKpi();
+buildPipeline();
+buildSlots();
+buildActions();
+buildCampaigns();
+</script>
+</body>
+</html>
