@@ -1,3 +1,4 @@
+```
 <!DOCTYPE html>
 <html lang='ko'>
 <head>
@@ -8,12 +9,12 @@
 
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0f172a;--bg2:#1e293b;--bg3:#0f1c2e;
-  --border:#1e3a5f;--border2:#2d3748;
-  --text:#e2e8f0;--text2:#94a3b8;--text3:#475569;
+  --bg:#0b1120;--bg2:#141e30;--bg3:#0d1626;
+  --border:#1d3352;--border2:#2a3a50;
+  --text:#e8edf5;--text2:#8fa3bf;--text3:#556a82;
   --accent:#7c3aed;--accent2:#a78bfa;
   --bound:#10b981;--quality:#a78bfa;--onboard:#3b82f6;
-  --contact:#64748b;--offer:#f59e0b;--dropped:#475569;
+  --contact:#64748b;--offer:#f59e0b;--dropped:#3a4555;
   --red:#ef4444;--orange:#f59e0b;--green:#10b981;--pink:#f093fb;
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans-serif;
@@ -24,22 +25,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 
 /* ── Header ── */
 .app-header{background:var(--bg2);border-bottom:1px solid var(--border);
-  padding:0 24px;display:flex;align-items:center;height:52px;
-  position:sticky;top:0;z-index:50}
-.logo{font-size:18px;font-weight:800;
+  padding:0 28px;display:flex;align-items:center;height:56px;
+  position:sticky;top:0;z-index:50;gap:4px}
+.logo{font-size:17px;font-weight:800;
   background:linear-gradient(90deg,#f093fb,#a78bfa);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  margin-right:32px;letter-spacing:-.5px}
-.nav-tab{padding:0 16px;height:52px;display:flex;align-items:center;
+  margin-right:28px;letter-spacing:-.5px;white-space:nowrap}
+.nav-tabs{display:flex;align-items:center;height:100%;gap:0}
+.nav-tab{padding:0 18px;height:56px;display:flex;align-items:center;
   font-size:13px;font-weight:500;color:var(--text3);cursor:pointer;
-  border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
+  border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;
+  letter-spacing:.01em}
 .nav-tab:hover{color:var(--text2)}
 .nav-tab.active{color:var(--accent2);border-bottom-color:var(--accent2)}
-.header-right{margin-left:auto;display:flex;align-items:center;gap:8px}
-.date-badge{font-size:12px;color:var(--text3);background:var(--bg3);
+.header-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.date-badge{font-size:11px;color:var(--text3);background:var(--bg3);
   padding:4px 10px;border-radius:6px;border:1px solid var(--border)}
-.refresh-btn{display:flex;align-items:center;gap:5px;padding:5px 12px;
-  border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;
+.refresh-btn{display:flex;align-items:center;gap:5px;padding:6px 14px;
+  border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;
   background:var(--bg3);border:1px solid var(--border);color:var(--text2);
   transition:all .15s;white-space:nowrap}
 .refresh-btn:hover{background:var(--accent);border-color:var(--accent);color:#fff}
@@ -50,57 +53,72 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 .update-time{font-size:11px;color:var(--text3)}
 
 /* ── Layout ── */
-.main{padding:20px 24px;max-width:1400px}
+.main{padding:24px 28px;max-width:1440px}
 .tab-page{display:none}.tab-page.active{display:block}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
-@media(max-width:900px){.two-col{grid-template-columns:1fr}}
-.panel{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px}
-.panel-title{font-size:12px;font-weight:700;color:var(--text3);
-  text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px}
+.two-col{display:grid;grid-template-columns:1.2fr 1fr;gap:16px;margin-bottom:16px}
+@media(max-width:960px){.two-col{grid-template-columns:1fr}}
+.panel{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px 22px}
+.panel-title{font-size:11px;font-weight:700;color:var(--text2);
+  text-transform:uppercase;letter-spacing:.8px;margin-bottom:16px;
+  display:flex;align-items:center;gap:6px}
+
+/* ── View switch ── */
+.view-switch{display:flex;margin-bottom:22px;background:var(--bg2);
+  border:1px solid var(--border);border-radius:10px;overflow:hidden;width:fit-content}
+.view-btn{padding:9px 24px;font-size:13px;font-weight:600;cursor:pointer;
+  color:var(--text3);transition:all .15s;border-right:1px solid var(--border)}
+.view-btn:last-child{border-right:none}
+.view-btn.active{background:var(--accent);color:#fff}
+.view-btn:hover:not(.active){color:var(--text2);background:var(--bg3)}
 
 /* ── KPI ── */
-.kpi-row{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
-.kpi-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;
-  padding:14px 16px;flex:1;min-width:130px}
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px}
+@media(max-width:960px){.kpi-row{grid-template-columns:repeat(3,1fr)}}
+.kpi-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;
+  padding:18px 20px;border-top:3px solid transparent;transition:border-color .15s}
 .kpi-label{font-size:11px;color:var(--text3);text-transform:uppercase;
-  letter-spacing:.6px;margin-bottom:6px}
-.kpi-val{font-size:24px;font-weight:700;color:var(--text);line-height:1}
-.kpi-delta{font-size:11px;margin-top:4px}
+  letter-spacing:.7px;margin-bottom:10px;font-weight:600}
+.kpi-val{font-size:28px;font-weight:800;color:var(--text);line-height:1;letter-spacing:-.5px}
+.kpi-delta{font-size:11px;margin-top:6px;font-weight:500}
 .delta-up{color:var(--green)}.delta-dn{color:var(--red)}.delta-neu{color:var(--text3)}
-.kpi-card.accent-bound{border-top:2px solid var(--bound)}
-.kpi-card.accent-purple{border-top:2px solid var(--accent2)}
-.kpi-card.accent-orange{border-top:2px solid var(--orange)}
-.kpi-card.accent-red{border-top:2px solid var(--red)}
-.kpi-card.accent-blue{border-top:2px solid var(--onboard)}
+.kpi-card.accent-bound{border-top-color:var(--bound)}
+.kpi-card.accent-purple{border-top-color:var(--accent2)}
+.kpi-card.accent-orange{border-top-color:var(--orange)}
+.kpi-card.accent-red{border-top-color:var(--red)}
+.kpi-card.accent-blue{border-top-color:var(--onboard)}
 
 /* ── Stage bar ── */
-.stage-bar-item{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:13px}
-.stage-bar-label{width:130px;color:var(--text2);flex-shrink:0}
-.stage-bar-track{flex:1;background:var(--bg3);border-radius:20px;height:8px;overflow:hidden}
-.stage-bar-fill{height:100%;border-radius:20px;transition:width .4s}
-.stage-bar-count{width:30px;text-align:right;color:var(--text);font-weight:600;font-size:12px}
+.stage-bar-item{display:flex;align-items:center;gap:12px;margin-bottom:10px;font-size:13px}
+.stage-bar-item:last-child{margin-bottom:0}
+.stage-bar-label{width:140px;color:var(--text2);flex-shrink:0;font-size:12px}
+.stage-bar-track{flex:1;background:var(--bg3);border-radius:20px;height:7px;overflow:hidden}
+.stage-bar-fill{height:100%;border-radius:20px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.stage-bar-count{width:32px;text-align:right;color:var(--text);font-weight:700;font-size:13px}
 
 /* ── Bar chart ── */
 .bar-chart{display:flex;gap:6px;align-items:flex-end;padding-top:8px}
 .bar-wrap{display:flex;flex-direction:column;align-items:center;flex:1;gap:4px}
-.bar-col{width:100%;border-radius:4px 4px 0 0;min-height:2px;background:var(--accent)}
+.bar-col{width:100%;border-radius:4px 4px 0 0;min-height:2px;
+  background:linear-gradient(180deg,var(--accent2),var(--accent))}
 .bar-lbl{font-size:9px;color:var(--text3);text-align:center;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%}
-.bar-val{font-size:10px;color:var(--text2)}
+.bar-val{font-size:11px;color:var(--text2);font-weight:600}
 
 /* ── Slot types ── */
 .slot-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .slot-type-item{background:var(--bg3);border:1px solid var(--border);
-  border-radius:8px;padding:10px 12px}
-.st-name{font-size:11px;color:var(--text2);margin-bottom:4px}
-.st-val{font-size:20px;font-weight:700}
+  border-radius:10px;padding:12px 14px}
+.st-name{font-size:11px;color:var(--text3);margin-bottom:6px;font-weight:600;letter-spacing:.4px;text-transform:uppercase}
+.st-val{font-size:22px;font-weight:800;letter-spacing:-.5px}
 
 /* ── Bottom stat ── */
-.stat-row{background:var(--bg2);border:1px solid var(--border);border-radius:10px;
-  padding:14px 20px;display:flex;gap:32px;flex-wrap:wrap;margin-bottom:20px}
-.stat-item{text-align:center}
-.stat-item .s-val{font-size:18px;font-weight:700;color:var(--text)}
-.stat-item .s-lbl{font-size:11px;color:var(--text3);margin-top:2px}
+.stat-row{display:grid;grid-template-columns:repeat(5,1fr);gap:0;
+  background:var(--bg2);border:1px solid var(--border);border-radius:12px;
+  overflow:hidden;margin-bottom:20px}
+.stat-item{text-align:center;padding:16px 12px;border-right:1px solid var(--border)}
+.stat-item:last-child{border-right:none}
+.stat-item .s-val{font-size:20px;font-weight:800;color:var(--text);letter-spacing:-.3px}
+.stat-item .s-lbl{font-size:11px;color:var(--text3);margin-top:4px;font-weight:500}
 
 /* ── Influencer table ── */
 .filter-bar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
@@ -258,6 +276,30 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 .tl-legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2)}
 .tl-legend-dot{width:10px;height:10px;border-radius:3px}
 
+/* ── Overdue list ── */
+.overdue-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2);margin-bottom:6px;cursor:pointer;transition:background .1s}
+.overdue-item:hover{background:rgba(239,68,68,.14)}
+.overdue-item:last-child{margin-bottom:0}
+.ov-name{font-size:13px;font-weight:600;color:var(--text);min-width:110px}
+.ov-stage{font-size:11px;padding:2px 7px;border-radius:4px;font-weight:600;background:var(--bg3);color:var(--text2)}
+.ov-days{font-size:12px;color:var(--red);font-weight:700;margin-left:auto;white-space:nowrap}
+.ov-action{font-size:12px;color:var(--text2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* ── Stage criteria ── */
+.criteria-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.criteria-stage{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.criteria-item{display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text2);margin-bottom:4px;line-height:1.4}
+.criteria-item:last-child{margin-bottom:0}
+.criteria-dot{width:5px;height:5px;border-radius:50%;background:var(--text3);margin-top:5px;flex-shrink:0}
+/* ── DoD ── */
+.dod-status{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--text3)}
+.dod-status.dod-pass{background:var(--green)}
+.dod-status.dod-warn{background:var(--orange)}
+.dod-status.dod-fail{background:var(--red)}
+.dod-cat{color:var(--text2);font-weight:600;font-size:12px}
+.dod-metric{color:var(--text);font-size:13px}
+.dod-target{color:var(--text3);text-align:center;font-size:12px}
+.dod-value{font-weight:700;text-align:center}
+
 /* ── Weekly ── */
 .week-tabs{display:flex;margin-bottom:20px;background:var(--bg2);
   border:1px solid var(--border);border-radius:10px;overflow:hidden;width:fit-content}
@@ -296,6 +338,7 @@ const CAMPAIGN_LOG=[{"date": "2026-02-28", "tiktokId": "whymaryjane", "type": "s
 const USED_BY_ID={"whymaryjane": 1, "vellavvlahj": 2, "osk.bema": 2, "immyouruna": 1, "jinjubilee": 1, "beyssz_": 1, "Giuliacortorillo": 1, "xninabinna": 1, "na_jaimin_": 1, "may_notyourspring": 1, "its.aloja": 1, "yumin01_": 1, "jaiixos": 1, "ginnysidi": 1, "aris__di": 1, "sia.mellamo": 1, "heeya.y": 1, "lee.ria99": 2, "oh.na.na6": 2, "yeonjinaahh": 1, "chiarabeautycorner": 1, "shot.by.lizaa_ugc": 1, "lisasvloging": 1, "lliska_": 1, "seoulgirllucy": 1, "nayaglowy": 1, "dedededemo": 1, "carolinednl_": 1, "thekoreanclurb": 1, "joohee.kim71": 1, "dianeonalleyy": 1, "as.at05": 1, "amyylandz": 1, "lifeinsk": 1, "zandube_": 1, "thelifeofho": 1};
 const BC_SCORE_RAW={"kimmythequeen": {"batch": "BC_251115", "latestResult": "드랍", "allResults": ["드랍", "드랍", "드랍", "드랍"], "passed": 0, "dropped": 1, "warned": 0}, "wonjin744": {"batch": "BC_251229", "latestResult": "미참여", "allResults": ["미참여", "미루기권 사용", "미참여", "미참여"], "passed": 1, "dropped": 1, "warned": 1}, "joohee.kim71": {"batch": "BC_251229", "latestResult": "경고", "allResults": ["1K_Boost", "미루기권 사용", "퀄리티 미달", "경고"], "passed": 5, "dropped": 6, "warned": 4}, "j.lee5060": {"batch": "BC_251229", "latestResult": "미참여", "allResults": ["미참여", "미참여", "미참여", "미참여"], "passed": 10, "dropped": 9, "warned": 8}, "glowbyjunie20": {"batch": "BC_251229", "latestResult": "드랍", "allResults": ["드랍", "미루기권 사용", "드랍", "드랍"], "passed": 0, "dropped": 0, "warned": 0}, "minsground6": {"batch": "BC_260112", "latestResult": "미참여", "allResults": ["미참여", "미참여", "미참여", "미참여"], "passed": 0, "dropped": 0, "warned": 0}, "mincero0": {"batch": "BC_260112", "latestResult": "드랍", "allResults": ["미루기권 사용", "드랍", "드랍", "드랍"], "passed": 0, "dropped": 0, "warned": 0}, "itssoolife": {"batch": "BC_260112", "latestResult": "드랍", "allResults": ["미루기권 사용", "경고", "경고", "드랍"], "passed": 0, "dropped": 0, "warned": 0}, "luna_03021": {"batch": "BC_260112", "latestResult": "경고", "allResults": ["퀄리티 미달", "퀄리티 미달", "퀄리티 미달", "경고"], "passed": 0, "dropped": 0, "warned": 0}, "creambr34d": {"batch": "BC_260112", "latestResult": "드랍", "allResults": ["1K_Boost", "경고", "경고", "드랍"], "passed": 0, "dropped": 0, "warned": 0}, "nayaglowy": {"batch": "BC_260112", "latestResult": "드랍", "allResults": ["1K_Boost", "경고", "드랍", "드랍"], "passed": 0, "dropped": 0, "warned": 0}, "dani.kim46": {"batch": "BC_260112", "latestResult": "미참여", "allResults": ["미참여", "미참여", "미참여", "미참여"], "passed": 0, "dropped": 0, "warned": 0}, "adore7114": {"batch": "BC_260112", "latestResult": "드랍", "allResults": ["미루기권 사용", "미참여", "드랍", "드랍"], "passed": 0, "dropped": 0, "warned": 0}, "mmmmaruyaa": {"batch": "BC_260112", "latestResult": "드랍", "allResults": ["통과", "미루기권 사용", "퀄리티 미달", "드랍"], "passed": 0, "dropped": 0, "warned": 0}, "slowy.sna": {"batch": "BC_260119", "latestResult": "드랍", "allResults": ["경고", "드랍", "드랍", "드랍"], "passed": 0, "dropped": 0, "warned": 0}, "thekoreanclurb": {"batch": "BC_260119", "latestResult": "경고", "allResults": ["통과", "통과", "통과", "경고"], "passed": 0, "dropped": 0, "warned": 0}, "shay.glowy": {"batch": "BC_260119", "latestResult": "드랍", "allResults": ["드랍", "드랍", "드랍", "드랍"], "passed": 0, "dropped": 0, "warned": 0}, "seoulgirllucy": {"batch": "BC_260119", "latestResult": "경고", "allResults": ["1K_Boost", "경고", "드랍", "경고"], "passed": 0, "dropped": 0, "warned": 0}, "soooyeon05": {"batch": "BC_260119", "latestResult": "드랍", "allResults": ["미루기권 사용", "경고", "경고", "드랍"], "passed": 0, "dropped": 0, "warned": 0}, "dedededemo": {"batch": "BC_260119", "latestResult": "통과", "allResults": ["퀄리티 미달", "퀄리티 미달", "통과", "통과"], "passed": 0, "dropped": 0, "warned": 0}, "bu_nii0": {"batch": "BC_260119", "latestResult": "드랍", "allResults": ["드랍", "드랍", "드랍", "드랍"], "passed": 0, "dropped": 0, "warned": 0}, "chaehyeon051": {"batch": "BC_260119", "latestResult": "드랍", "allResults": ["통과", "경고", "드랍", "드랍"], "passed": 0, "dropped": 0, "warned": 0}, "glowith_allyoung": {"batch": "BC_260119", "latestResult": "드랍", "allResults": ["미루기권 사용", "경고", "경고", "드랍"], "passed": 0, "dropped": 0, "warned": 0}, "judyboo00": {"batch": "BC_260119", "latestResult": "드랍", "allResults": ["경고", "미루기권 사용", "드랍", "드랍"], "passed": 0, "dropped": 0, "warned": 0}, "hazelin_yj": {"batch": "BC_260119", "latestResult": "드랍", "allResults": ["경고", "드랍", "드랍", "드랍"], "passed": 0, "dropped": 0, "warned": 0}, "carolinednl_": {"batch": "BC_260119", "latestResult": "통과", "allResults": ["통과", "통과", "통과", "통과"], "passed": 0, "dropped": 0, "warned": 0}};
 const BRAND_CONTACTS=[{"date": "2025-07-22", "heroine": "glowykyo", "brand": "numbuzin", "agency": "", "category": "skincare", "prPaid": "PR", "ambassador": "", "fee": 0, "deliverable": "1.0", "status": "2. 진행 중"}, {"date": "2025-07-22", "heroine": "glowykyo", "brand": "anua", "agency": "", "category": "skincare", "prPaid": "PR", "ambassador": "ambassador", "fee": 0, "deliverable": "3.0", "status": "2. 진행 중"}, {"date": "2025-07-22", "heroine": "glowykyo", "brand": "aplb", "agency": "yesstyle", "category": "skincare", "prPaid": "PR", "ambassador": "affiliate", "fee": 0, "deliverable": "", "status": "드롭"}, {"date": "2025-07-21", "heroine": "glowykyo", "brand": "seleve", "agency": "jerrybeans", "category": "skincare", "prPaid": "PR", "ambassador": "", "fee": 0, "deliverable": "1.0", "status": "1. 신청 완료"}, {"date": "2025-07-18", "heroine": "glowykyo", "brand": "esther formula", "agency": "jerrybeans", "category": "skincare", "prPaid": "PR", "ambassador": "", "fee": 0, "deliverable": "1.0", "status": "1. 신청 완료"}, {"date": "2025-07-18", "heroine": "glowykyo", "brand": "centellian24", "agency": "", "category": "skincare", "prPaid": "PR", "ambassador": "", "fee": 0, "deliverable": "1.0", "status": "2. 진행 중"}, {"date": "2025-07-18", "heroine": "glowykyo", "brand": "house of balance", "agency": "", "category": "skincare", "prPaid": "PR", "ambassador": "ambassador", "fee": 0, "deliverable": "1.0", "status": "2. 진행 중"}, {"date": "2025-07-18", "heroine": "glowykyo", "brand": "vt cosmetics", "agency": "", "category": "skincare", "prPaid": "PR", "ambassador": "", "fee": 0, "deliverable": "1.0", "status": "1. 신청 완료"}, {"date": "2025-07-18", "heroine": "glowykyo", "brand": "ulooin", "agency": "", "category": "skincare", "prPaid": "PR", "ambassador": "ambassador", "fee": 0, "deliverable": "2.0", "status": "1. 신청 완료"}, {"date": "2025-07-23", "heroine": "glowykyo", "brand": "frankly", "agency": "", "category": "skincare", "prPaid": "PR", "ambassador": "", "fee": 0, "deliverable": "1.0", "status": "드롭"}, {"date": "2025-07-28", "heroine": "glowykyo", "brand": "cell fusion c", "agency": "", "category": "skincare", "prPaid": "PR", "ambassador": "ambassador", "fee": 0, "deliverable": "", "status": "드롭"}, {"date": "2025-07-31", "heroine": "glowykyo", "brand": "esther formula", "agency": "jerrybeans", "category": "skincare", "prPaid": "Paid", "ambassador": "", "fee": 0, "deliverable": "1.0", "status": ""}, {"date": "2025-07-31", "heroine": "glowykyo", "brand": "dr.g", "agency": "", "category": "skincare", "prPaid": "PR", "ambassador": "", "fee": 0, "deliverable": "1.0", "status": ""}, {"date": "2025-08-04", "heroine": "hoonyo", "brand": "esther formula", "agency": "jerrybeans", "category": "skincare", "prPaid": "PR", "ambassador": "", "fee": 0, "deliverable": "1.0", "status": "1. 신청 완료"}, {"date": "2025-07-30", "heroine": "hoonyo", "brand": "fation", "agency": "", "category": "skincare", "prPaid": "PR", "ambassador": "", "fee": 0, "deliverable": "1.0", "status": "2. 진행 중"}, {"date": "2025-08-06", "heroine": "glowykyo", "brand": "hwahe", "agency": "", "category": "skincare", "prPaid": "PR", "ambassador": "ambassador", "fee": 0, "deliverable": "1.0", "status": "1. 신청 완료"}, {"date": "2025-08-06", "heroine": "kimmythequeen", "brand": "soonding", "agency": "", "category": "skincare", "prPaid": "PR", "ambassador": "", "fee": 0, "deliverable": "1.0", "status": "1. 신청 완료"}, {"date": "2025-08-06", "heroine": "glowykyo", "brand": "soonding", "agency": "", "category": "skincare", "prPaid": "PR", "ambassador": "", "fee": 0, "deliverable": "1.0", "status": "1. 신청 완료"}, {"date": "2025-08-07", "heroine": "kimmythequeen", "brand": "dr.rejuall", "agency": "", "category": "skincare", "prPaid": "PR", "ambassador": "", "fee": 0, "deliverable": "1.0", "status": "1. 신청 완료"}];
+let WEEKLY_DATA=[];
 const CAMPAIGN_STAGES=[{"name": "인플 디스커버리", "days": 3}, {"name": "배송", "days": 3}, {"name": "가이드라인 콜", "days": 3}, {"name": "콘텐츠 1차 제출", "days": 2}, {"name": "피드백", "days": 2}, {"name": "콘텐츠 2차 제출", "days": 1}, {"name": "최종 확인", "days": 1}, {"name": "업로드", "days": 0}];
 </script>
 
@@ -305,6 +348,7 @@ const CAMPAIGN_STAGES=[{"name": "인플 디스커버리", "days": 3}, {"name": "
   <div class="nav-tab" onclick="switchTab('influencer')">인플루언서</div>
   <div class="nav-tab" onclick="switchTab('campaigns')">캠페인</div>
   <div class="nav-tab" onclick="switchTab('weekly')">위클리 리포트</div>
+  <div class="nav-tab" onclick="switchTab('monthly')">먼슬리 분석</div>
   <div class="header-right">
     <span class="update-time" id="update-time"></span>
     <button class="refresh-btn" id="refresh-btn" onclick="fetchLiveData()">
@@ -324,26 +368,81 @@ const CAMPAIGN_STAGES=[{"name": "인플 디스커버리", "days": 3}, {"name": "
 
   <!-- 대시보드 -->
   <div class="tab-page active" id="page-dashboard">
-    <div class="kpi-row" id="kpi-row"></div>
-    <div class="two-col">
-      <div>
-        <div class="panel" style="margin-bottom:14px">
-          <div class="panel-title">스테이지별 현황</div>
-          <div id="stage-bars"></div>
+
+    <!-- 뷰 스위치 -->
+    <div class="view-switch">
+      <div class="view-btn active" id="btn-owner" onclick="switchDashView('owner')">📊 오너 뷰</div>
+      <div class="view-btn" id="btn-ops" onclick="switchDashView('ops')">⚡ 오퍼레이터 뷰</div>
+    </div>
+
+    <!-- ── 오너 뷰 ── -->
+    <div id="dash-owner">
+      <!-- KPI -->
+      <div class="kpi-row" id="kpi-row"></div>
+
+      <!-- 파이프라인 + 바인딩 일정 -->
+      <div class="two-col">
+        <div>
+          <div class="panel" style="margin-bottom:14px">
+            <div class="panel-title">파이프라인 현황</div>
+            <div id="stage-bars"></div>
+          </div>
+        </div>
+        <div>
+          <div class="panel" style="margin-bottom:14px">
+            <div class="panel-title">예상 바인딩 일정</div>
+            <div id="week-bars"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-title">슬롯 타입별 현황</div>
+            <div class="slot-type-grid" id="slot-types"></div>
+          </div>
         </div>
       </div>
-      <div>
-        <div class="panel" style="margin-bottom:14px">
-          <div class="panel-title">예상 바인딩 일정</div>
-          <div id="week-bars"></div>
-        </div>
-        <div class="panel">
-          <div class="panel-title">슬롯 타입별 현황</div>
-          <div class="slot-type-grid" id="slot-types"></div>
-        </div>
+
+      <!-- 이번달 스탯 -->
+      <div class="stat-row" id="bottom-stats"></div>
+
+      <!-- DoD -->
+      <div class="panel" style="margin-top:16px">
+        <div class="panel-title">DoD — 단계 전환 지표</div>
+        <table style="width:100%;border-collapse:collapse">
+          <thead><tr>
+            <th style="text-align:left;padding:8px 12px;font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);background:var(--bg3)">Category</th>
+            <th style="text-align:left;padding:8px 12px;font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);background:var(--bg3)">Metric</th>
+            <th style="text-align:center;padding:8px 12px;font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);background:var(--bg3)">목표</th>
+            <th style="text-align:center;padding:8px 12px;font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);background:var(--bg3)">현재</th>
+            <th style="text-align:center;padding:8px 12px;font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);background:var(--bg3)">Status</th>
+          </tr></thead>
+          <tbody id="dod-tbody"></tbody>
+        </table>
       </div>
     </div>
-    <div class="stat-row" id="bottom-stats"></div>
+
+    <!-- ── 오퍼레이터 뷰 ── -->
+    <div id="dash-ops" style="display:none">
+      <!-- 오늘 액션 리스트 -->
+      <div class="panel" style="margin-bottom:16px" id="overdue-panel">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <div class="panel-title" style="margin-bottom:0">🚨 지금 바로 액션 필요</div>
+          <span id="overdue-count" style="font-size:11px;color:var(--red);font-weight:700"></span>
+        </div>
+        <div id="overdue-list"></div>
+      </div>
+
+      <!-- 스테이지별 대기 인원 요약 -->
+      <div class="panel" style="margin-bottom:16px">
+        <div class="panel-title">스테이지별 현황 (빠른 확인)</div>
+        <div id="stage-bars-ops"></div>
+      </div>
+
+      <!-- 스테이지 진입 조건 -->
+      <div class="panel">
+        <div class="panel-title">스테이지 진입 조건 (다음 단계 올리기 전 체크)</div>
+        <div id="stage-criteria-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px"></div>
+      </div>
+    </div>
+
   </div>
 
   <!-- 인플루언서 -->
@@ -372,6 +471,10 @@ const CAMPAIGN_STAGES=[{"name": "인플 디스커버리", "days": 3}, {"name": "
 
   <!-- 캠페인 -->
   <div class="tab-page" id="page-campaigns">
+    <div class="panel" style="margin-bottom:20px">
+      <div class="panel-title">캠페인 효율 비교</div>
+      <div id="camp-status-panel"></div>
+    </div>
     <div class="camp-cards" id="camp-cards"></div>
   </div>
 
@@ -391,6 +494,36 @@ const CAMPAIGN_STAGES=[{"name": "인플 디스커버리", "days": 3}, {"name": "
     <div class="panel">
       <div class="panel-title" style="margin-bottom:14px">주차별 요약</div>
       <div id="weekly-table"></div>
+    </div>
+  </div>
+
+  <!-- 먼슬리 분석 -->
+  <div class="tab-page" id="page-monthly">
+    <div id="monthly-month-tabs" class="week-tabs" style="margin-bottom:18px"></div>
+    <div id="monthly-auto-comment" style="margin-bottom:18px"></div>
+    <div class="two-col" style="margin-bottom:18px">
+      <div class="panel">
+        <div class="panel-title">월별 지급액 추이</div>
+        <div id="monthly-trend-chart"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">캠페인별 비교</div>
+        <div id="monthly-camp-chart"></div>
+      </div>
+    </div>
+    <div class="two-col" style="margin-bottom:18px">
+      <div class="panel">
+        <div class="panel-title">이달 정산 현황</div>
+        <div id="monthly-detail-table"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">슬롯 효율 지표</div>
+        <div id="monthly-efficiency"></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">콘텐츠 유형별 분석</div>
+      <div id="monthly-type-breakdown"></div>
     </div>
   </div>
 
@@ -511,7 +644,182 @@ function buildTimelineStages(startDate) {
   });
 }
 
+// Get current stage index for a campaign (based on today's date vs timeline)
+function getCampCurrentStage(startDate) {
+  if (!startDate) return -1;
+  const todayStr = new Date().toISOString().slice(0,10);
+  const stages = buildTimelineStages(startDate);
+  for (let i = stages.length-1; i >= 0; i--) {
+    if (todayStr >= stages[i].from) return i;
+  }
+  return -1; // not started yet
+}
+
+// Check if campaign is delayed (today past expected end)
+function isCampDelayed(startDate) {
+  if (!startDate) return false;
+  const todayStr = new Date().toISOString().slice(0,10);
+  const stages = buildTimelineStages(startDate);
+  const lastStage = stages[stages.length-1];
+  return todayStr > lastStage.to;
+}
+
 // ── TAB 1: Dashboard ──────────────────────────────────────────────────────
+// ── DoD Calculation Functions ────────────────────────────────────────────
+function calculateLeadtime(){
+  const onboarded=CREATORS.filter(c=>c.stage==='Onboarding'&&c.stageStart);
+  const withinD2=onboarded.filter(c=>{
+    const diff=(new Date()-new Date(c.stageStart))/(1000*60*60*24);
+    return diff<=2;
+  });
+  return onboarded.length>0?Math.round((withinD2.length/onboarded.length)*100):0;
+}
+function calculateMugaLeadtime(){
+  // Muga 스테이지 진입 후 D+5 이내 시작한 비율
+  const mugas=CREATORS.filter(c=>c.stage==='Muga'&&c.stageStart);
+  const ok=mugas.filter(c=>(daysSince(c.stageStart)||99)<=5);
+  return mugas.length>0?Math.round((ok.length/mugas.length)*100):null;
+}
+function calculateMugaComplete(){
+  // Muga → 다음 스테이지로 넘어간 비율 (Muga 경험자 중 Quality 이상인 사람)
+  const everMuga=CREATORS.filter(c=>['Quality','Binding Offered','Bound'].includes(c.stage));
+  const total=CREATORS.filter(c=>c.stage==='Muga').length+everMuga.length;
+  return total>0?Math.round((everMuga.length/total)*100):null;
+}
+function calculateBindAccept(){
+  const offered=CREATORS.filter(c=>['Binding Offered','Bound'].includes(c.stage));
+  const bound=CREATORS.filter(c=>c.stage==='Bound');
+  return offered.length>0?Math.round((bound.length/offered.length)*100):0;
+}
+function calculateRetention(){
+  // 바인딩 후 첫달: 실제 슬롯 사용한 사람 / 전체 Bound 수
+  const boundAll=CREATORS.filter(c=>c.stage==='Bound');
+  const used=boundAll.filter(c=>c.usedSlot>0);
+  return boundAll.length>0?Math.round((used.length/boundAll.length)*100):null;
+}
+function calculateQAPass(){
+  let pass=0,total=0;
+  Object.values(BC_SCORE_RAW||{}).forEach(bc=>{
+    (bc.allResults||[]).forEach(w=>{if(w){total++;if(w==='통과')pass++;}});
+  });
+  return total>0?Math.round((pass/total)*100):0;
+}
+const STAGE_ORDER=['Contacting','Onboarding','Test','USP','Muga','Quality','Binding Offered','Bound','Dropped'];
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx1CAx8Qn1miS4IPVAqw7lEdOkS-Fs241B2r2n4oGUYIY2TslSVj_8l8BC27xdVCKY_/exec';
+
+function moveStageSelect(creatorId, newStage){
+  if(!newStage) return;
+  const c=CREATORS.find(x=>x.id===+creatorId);
+  if(!c||c.stage===newStage) return;
+  const todayStr=new Date().toISOString().slice(0,10);
+  const raw=RAW_CREATORS.find(x=>x.tiktokId===c.tiktokId&&x.name===c.name);
+  if(raw){ raw.stage=newStage; raw.stageStart=todayStr; }
+  CREATORS=buildCreators();
+  buildDashboard(); buildInfluencer();
+  showToast((c.name||c.tiktokId)+' → '+newStage+' (시트 반영 중...)');
+  // Apps Script로 시트 업데이트
+  fetch(APPS_SCRIPT_URL, {
+    method:'POST',
+    headers:{'Content-Type':'text/plain'},
+    body:JSON.stringify({action:'updateStage', tiktokId:c.tiktokId, newStage:newStage, stageStart:todayStr})
+  })
+  .then(r=>r.json())
+  .then(d=>{ if(d.ok) showToast((c.name||c.tiktokId)+' → '+newStage+' ✓ 시트 저장됨'); else showToast('⚠️ 시트 저장 실패: '+(d.error||'unknown')); })
+  .catch(()=>showToast('⚠️ 네트워크 오류 — 로컬만 변경됨'));
+  // 사이드패널 열려 있으면 내용 갱신
+  if(document.getElementById('side-panel').classList.contains('open')) openPanel(creatorId);
+}
+function buildOverdueList(){
+  const stageColors={'Bound':'var(--bound)','Binding Offered':'var(--offer)','Quality':'var(--quality)',
+    'Onboarding':'var(--onboard)','Contacting':'var(--contact)','Test':'#0ea5e9','USP':'#6ee7b7','Muga':'var(--green)'};
+  const overdue=CREATORS.filter(c=>isOverdue(c)&&c.stage!=='Dropped')
+    .sort((a,b)=>(daysSince(a.stageStart)||0)-(daysSince(b.stageStart)||0))
+    .reverse();
+  const el=document.getElementById('overdue-list');
+  const cnt=document.getElementById('overdue-count');
+  if(!overdue.length){
+    el.innerHTML='<div style="font-size:13px;color:var(--text3);padding:8px 0">🎉 오버듀 없음</div>';
+    cnt.textContent='';return;
+  }
+  cnt.textContent=overdue.length+'명 오버듀';
+  el.innerHTML=overdue.map(c=>{
+    const days=daysSince(c.stageStart)||0;
+    const lead=STAGE_LEAD[c.stage]||0;
+    const over=days-lead;
+    const col=stageColors[c.stage]||'var(--text3)';
+    const opts=STAGE_ORDER.map(s=>'<option value="'+s+'"'+(s===c.stage?' selected':'')+'>'+s+'</option>').join('');
+    return '<div class="overdue-item">' +
+      '<div style="flex:1;min-width:0;cursor:pointer" onclick="openPanel(\''+c.id+'\')">' +
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">' +
+          '<span class="ov-name">'+escH(c.name||c.tiktokId||'?')+'</span>' +
+          '<span class="ov-days">+'+over+'일 초과</span>' +
+        '</div>' +
+        '<div class="ov-action" style="white-space:normal">'+escH(c.nextAction||'−')+'</div>' +
+      '</div>' +
+      '<select onchange="moveStageSelect(\''+c.id+'\',this.value)" onclick="event.stopPropagation()" '+
+        'style="margin-left:10px;flex-shrink:0;font-size:12px;padding:4px 8px;border-radius:6px;border:1px solid '+col+';'+
+        'background:var(--bg2);color:'+col+';font-weight:600;cursor:pointer">'+
+        opts+
+      '</select>'+
+    '</div>';
+  }).join('');
+}
+
+const STAGE_CRITERIA={
+  'Contacting':   ['TikTok DM 또는 이메일 컨택 완료','응답 또는 관심 확인','온보딩 일정 조율 가능 상태'],
+  'Onboarding':   ['커피챗(온보딩 콜) 완료','계약서 초안 전달','USP 테스트 동의 확인'],
+  'Test':         ['테스트 캠페인 콘텐츠 제출 완료','조회수/참여율 기준 충족 여부 확인'],
+  'USP':          ['USP 콘텐츠 3개 이상 제출','콘텐츠 퀄리티 내부 리뷰 통과'],
+  'Muga':         ['무가 콘텐츠 일정 확정','무가 샘플 발송 완료','콘텐츠 완수 확인'],
+  'Quality':      ['BC Score 배치 참여 완료','latestResult 통과 또는 경고 이하','계약 협상 준비 완료'],
+  'Binding Offered':['계약서 최종본 전달','서명 기한 D+3 이내','슬롯 수/타입 확정'],
+  'Bound':        ['계약 서명 완료','슬롯 스케줄 확정','첫 콘텐츠 업로드 일정 공유'],
+};
+function buildStageCriteria(){
+  const stageColors={'Bound':'var(--bound)','Binding Offered':'var(--offer)','Quality':'var(--quality)',
+    'Onboarding':'var(--onboard)','Contacting':'var(--contact)','Test':'#0ea5e9','USP':'#6ee7b7','Muga':'var(--green)'};
+  const order=['Contacting','Onboarding','Test','USP','Muga','Quality','Binding Offered','Bound'];
+  document.getElementById('stage-criteria-grid').innerHTML=order.map(s=>{
+    const cnt=CREATORS.filter(c=>c.stage===s).length;
+    const col=stageColors[s]||'var(--text3)';
+    const items=(STAGE_CRITERIA[s]||[]).map(t=>'<div class="criteria-item"><span class="criteria-dot" style="background:'+col+'"></span>'+t+'</div>').join('');
+    return '<div class="criteria-card">' +
+      '<div class="criteria-stage" style="color:'+col+'">'+s+' <span style="color:var(--text3);font-weight:400">(현재 '+cnt+'명)</span></div>' +
+      items+'</div>';
+  }).join('');
+}
+
+function buildDoDTable(){
+  const rows=[
+    {cat:'Acquisition',metric:'Contact → Onboarding (D+2)',target:90,val:calculateLeadtime()},
+    {cat:'Growth',     metric:'Muga Onboard → Start (D+5)', target:90,val:calculateMugaLeadtime()},
+    {cat:'Growth',     metric:'Muga 완수율',                target:80,val:calculateMugaComplete()},
+    {cat:'Binding',    metric:'바인딩 수락률',               target:50,val:calculateBindAccept()},
+    {cat:'Binding',    metric:'첫달 리텐션',                 target:85,val:calculateRetention()},
+    {cat:'Campaign',   metric:'QA 통과율 (1차)',             target:70,val:calculateQAPass()},
+  ];
+  document.getElementById('dod-tbody').innerHTML=rows.map(d=>{
+    if(d.val===null){
+      return '<tr>'+
+        '<td class="dod-cat">'+d.cat+'</td>'+
+        '<td class="dod-metric">'+d.metric+'</td>'+
+        '<td class="dod-target">'+d.target+'%</td>'+
+        '<td class="dod-value" style="color:var(--text3)">−</td>'+
+        '<td style="text-align:center"><span class="dod-status"></span></td>'+
+      '</tr>';
+    }
+    const st=d.val>=d.target?'pass':d.val>=d.target-10?'warn':'fail';
+    const valColor=st==='pass'?'var(--green)':st==='warn'?'var(--orange)':'var(--red)';
+    return '<tr>'+
+      '<td class="dod-cat">'+d.cat+'</td>'+
+      '<td class="dod-metric">'+d.metric+'</td>'+
+      '<td class="dod-target">'+d.target+'%</td>'+
+      '<td class="dod-value" style="color:'+valColor+'">'+d.val+'%</td>'+
+      '<td style="text-align:center"><span class="dod-status dod-'+st+'"></span></td>'+
+    '</tr>';
+  }).join('');
+}
+
 function buildDashboard() {
   const bound       = CREATORS.filter(c=>c.stage==='Bound');
   const totalSlots  = bound.reduce((s,c)=>s+c.slotNum,0);
@@ -582,6 +890,10 @@ function buildDashboard() {
     {lbl:'QA 통과율',   val:(qaTotal?Math.round(qaPassed/qaTotal*100):0)+'%'},
     {lbl:'이번달 수익', val:fmtFee(monthRev)},
   ].map(s=>'<div class="stat-item"><div class="s-val">'+s.val+'</div><div class="s-lbl">'+s.lbl+'</div></div>').join('');
+
+  try { buildDoDTable(); } catch(e) { console.warn('DoD 로드 오류:', e); }
+  try { buildOverdueList(); } catch(e) { console.warn('Overdue 로드 오류:', e); }
+  try { buildStageCriteria(); } catch(e) { console.warn('Criteria 로드 오류:', e); }
 }
 
 // ── TAB 2: Influencer ────────────────────────────────────────────────────
@@ -603,14 +915,14 @@ function buildInfluencer() {
     const pct=c.slotNum?Math.min(100,Math.round(c.usedSlot/c.slotNum*100)):0;
     return '<tr class="'+(od?'row-overdue':'')+'" onclick="openPanel('+c.id+')">' +
       '<td><span style="font-weight:600">'+escH(c.name||c.tiktokId||'?')+'</span></td>' +
-      '<td><span style="color:var(--text3);font-size:12px">@'+escH(c.tiktokId||'')+'</span></td>' +
+      '<td><a href="https://www.tiktok.com/@'+escH(c.tiktokId||'')+'" target="_blank" onclick="event.stopPropagation()" style="color:var(--text3);font-size:12px;text-decoration:none" onmouseover="this.style.color=\'var(--accent)\'" onmouseout="this.style.color=\'var(--text3)\'">@'+escH(c.tiktokId||'')+'</a></td>' +
       '<td><span class="s-badge '+stageClass(c.stage)+'">'+escH(c.stage)+'</span></td>' +
       '<td><span style="font-weight:600">'+c.usedSlot+'/'+c.slotNum+'</span>' +
         '<span class="slot-bar-mini"><span class="slot-bar-mini-fill" style="width:'+pct+'%"></span></span></td>' +
       '<td><span style="color:'+(od?'var(--red)':'var(--text2)')+'">'+
         (days!==null?days+'일':'−')+(lead!==undefined&&lead!==null?'/'+lead+'일':'')+'</span></td>' +
       '<td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;font-size:12px;color:var(--text2)">'+escH(c.nextAction||'−')+'</td>' +
-      '<td><span style="font-size:11px;color:var(--text3)">−</span></td></tr>';
+      '<td><span style="font-size:11px;color:var(--text3)">'+(c.slotBA&&c.slotMakeup?'B&A+Makeup':c.slotBA?'B&A':c.slotMakeup?'Makeup':'−')+'</span></td></tr>';
   }).join('');
 }
 function setInfFilter(f){infFilter=f;document.querySelectorAll('.filter-btn[data-f]').forEach(b=>b.classList.toggle('active',b.dataset.f===f));buildInfluencer()}
@@ -619,14 +931,15 @@ function setInfSearch(q){infSearch=q;buildInfluencer()}
 
 // ── Side Panel ───────────────────────────────────────────────────────────
 function openPanel(id) {
-  const c = CREATORS.find(x=>x.id===id); if(!c)return;
+  const c = CREATORS.find(x=>x.id===+id); if(!c)return;
   document.getElementById('sp-name').textContent = c.name||c.tiktokId||'?';
-  document.getElementById('sp-tid').textContent  = '@'+(c.tiktokId||'');
+  document.getElementById('sp-tid').innerHTML = '<a href="https://www.tiktok.com/@'+escH(c.tiktokId||'')+'" target="_blank" style="color:inherit;text-decoration:none" onmouseover="this.style.opacity=\'0.7\'" onmouseout="this.style.opacity=\'1\'">@'+escH(c.tiktokId||'')+'</a>';
   const od=isOverdue(c), days=daysSince(c.stageStart), lead=STAGE_LEAD[c.stage];
   let html='';
 
   html+='<div class="sp-section"><div class="sp-sec-title">프로필</div>';
-  html+=row('Stage','<span class="s-badge '+stageClass(c.stage)+'">'+escH(c.stage)+'</span>'+(od?' <span style="color:var(--red);font-size:11px">⚠ 연체</span>':''));
+  const stageOpts=STAGE_ORDER.map(s=>'<option value="'+s+'"'+(s===c.stage?' selected':'')+'>'+s+'</option>').join('');
+  html+=row('Stage','<select onchange="moveStageSelect(\''+c.id+'\',this.value)" style="font-size:12px;padding:4px 8px;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--text);cursor:pointer">'+stageOpts+'</select>'+(od?' <span style="color:var(--red);font-size:11px">⚠ 연체</span>':''));
   html+=row('체류일',days!==null?days+'일'+(lead!==undefined&&lead!==null?' / 한도 '+lead+'일':''):'−');
   html+=row('Next Action',escH(c.nextAction||'−'));
   html+=row('Expected Bind',escH(c.expectedBind||'−'));
@@ -677,19 +990,106 @@ function closePanel(){
 
 // ── TAB 3: Campaigns ─────────────────────────────────────────────────────
 function buildCampaigns() {
-  document.getElementById('camp-cards').innerHTML = CAMPAIGNS.map((c,i)=>
-    '<div class="camp-card '+(c.isMock?'type-mock':'type-paid')+'" onclick="openCampModal('+i+')">' +
-    '<div class="camp-card-name">'+escH(c.name)+'</div>' +
-    '<span class="camp-type-badge '+(c.isMock?'ctb-mock':'ctb-paid')+'">'+(c.isMock?'Mock':'Paid')+'</span>' +
-    '<div class="camp-stats">' +
-      '<div class="cs-item"><div class="cs-val">'+c.creators+'</div><div class="cs-lbl">크리에이터</div></div>' +
-      '<div class="cs-item"><div class="cs-val">'+c.slots+'</div><div class="cs-lbl">슬롯</div></div>' +
-      '<div class="cs-item"><div class="cs-val">'+fmtFee(c.fee)+'</div><div class="cs-lbl">총 지급금액</div></div>' +
-      '<div class="cs-item"><div class="cs-val">'+(c.fee&&c.slots?fmtFee(Math.round(c.fee/c.slots)):'−')+'</div><div class="cs-lbl">평균 단가</div></div>' +
-    '</div>' +
-    '<div class="camp-period">📅 '+(c.startDate||'−')+' ~ '+(c.endDate||'−')+'</div>' +
-    '</div>'
-  ).join('');
+  const todayStr = new Date().toISOString().slice(0,10);
+
+  // ── 캠페인 효율 비교 패널 (full-width 카드 그리드) ─────────────────────
+  const allRealCamps = CAMPAIGNS.filter(c=>!c.isMock);
+  let statusHtml = '';
+  if (allRealCamps.length === 0) {
+    statusHtml = '<div style="color:var(--text3);font-size:13px;padding:12px 0">캠페인 데이터 없음</div>';
+  } else {
+    const maxFee = Math.max(...allRealCamps.map(c=>c.fee||0), 1);
+    const maxAvg = Math.max(...allRealCamps.map(c=>c.slots?Math.round(c.fee/c.slots):0), 1);
+    const CAMP_COLORS = ['#60a5fa','#a78bfa','#34d399','#f59e0b','#f87171','#fb923c'];
+
+    statusHtml += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px">';
+    allRealCamps.forEach((c, idx) => {
+      const stageIdx  = c.startDate ? getCampCurrentStage(c.startDate) : -1;
+      const delayed   = c.startDate ? isCampDelayed(c.startDate) : false;
+      const stages    = c.startDate ? buildTimelineStages(c.startDate) : [];
+      const stageName = stageIdx >= 0 ? stages[stageIdx].name : (c.startDate && c.startDate > todayStr ? '시작 전' : '완료');
+      const stageColor= stageIdx >= 0 ? TL_COLORS[stageIdx] : {bg:'rgba(100,100,100,.25)',text:'#888'};
+      const avgFee    = c.slots ? Math.round((c.fee||0)/c.slots) : 0;
+      const feeBarW   = Math.round(((c.fee||0)/maxFee)*100);
+      const avgBarW   = Math.round((avgFee/maxAvg)*100);
+      const accentClr = CAMP_COLORS[idx % CAMP_COLORS.length];
+      const progress  = stages.length > 0 ? Math.round((Math.max(0,stageIdx)+1)/stages.length*100) : 0;
+
+      statusHtml +=
+        '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;border-top:3px solid '+accentClr+'">' +
+          // 헤더
+          '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">' +
+            '<div>' +
+              '<div style="font-weight:700;font-size:14px;color:var(--text)">'+escH(c.name)+'</div>' +
+              '<div style="font-size:11px;color:var(--text3);margin-top:2px">'+c.creators+'명 · '+c.slots+'슬롯 · '+(c.startDate||'−')+'</div>' +
+            '</div>' +
+            '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">' +
+              '<span style="font-size:10px;background:'+stageColor.bg+';color:'+stageColor.text+';padding:2px 7px;border-radius:8px">'+escH(stageName)+'</span>' +
+              (delayed?'<span style="font-size:10px;color:var(--red)">⚠ 지연</span>':'') +
+            '</div>' +
+          '</div>' +
+          // 타임라인 진행 바
+          (stages.length>0 ?
+            '<div style="background:var(--bg);border-radius:4px;height:4px;overflow:hidden;margin-bottom:12px">' +
+              '<div style="height:4px;border-radius:4px;background:'+accentClr+';width:'+progress+'%"></div>' +
+            '</div>' : '') +
+          // 지표
+          '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">' +
+            '<div style="background:var(--bg);border-radius:8px;padding:10px">' +
+              '<div style="font-size:10px;color:var(--text3);margin-bottom:3px">총 지급액</div>' +
+              '<div style="font-size:16px;font-weight:700;color:'+accentClr+'">'+fmtFee(c.fee)+'</div>' +
+            '</div>' +
+            '<div style="background:var(--bg);border-radius:8px;padding:10px">' +
+              '<div style="font-size:10px;color:var(--text3);margin-bottom:3px">슬롯당 평균</div>' +
+              '<div style="font-size:16px;font-weight:700;color:var(--text2)">'+fmtFee(avgFee)+'</div>' +
+            '</div>' +
+          '</div>' +
+          // 비교 바
+          '<div style="display:flex;flex-direction:column;gap:5px">' +
+            '<div style="display:flex;align-items:center;gap:6px">' +
+              '<span style="font-size:10px;color:var(--text3);width:44px">지급액</span>' +
+              '<div style="flex:1;background:var(--bg);border-radius:3px;height:5px"><div style="height:5px;border-radius:3px;background:'+accentClr+';width:'+feeBarW+'%;transition:width .4s"></div></div>' +
+              '<span style="font-size:10px;color:var(--text3);width:32px;text-align:right">'+feeBarW+'%</span>' +
+            '</div>' +
+            '<div style="display:flex;align-items:center;gap:6px">' +
+              '<span style="font-size:10px;color:var(--text3);width:44px">단가</span>' +
+              '<div style="flex:1;background:var(--bg);border-radius:3px;height:5px"><div style="height:5px;border-radius:3px;background:'+accentClr+'88;width:'+avgBarW+'%;transition:width .4s"></div></div>' +
+              '<span style="font-size:10px;color:var(--text3);width:32px;text-align:right">'+avgBarW+'%</span>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+    });
+    statusHtml += '</div>';
+  }
+  document.getElementById('camp-status-panel').innerHTML = statusHtml || '<div style="color:var(--text3);font-size:13px">데이터 없음</div>';
+
+  // ── 캠페인 카드 ──────────────────────────────────────────────────────────
+  document.getElementById('camp-cards').innerHTML = CAMPAIGNS.map((c,i)=>{
+    const stageIdx = c.startDate ? getCampCurrentStage(c.startDate) : -1;
+    const delayed = c.startDate ? isCampDelayed(c.startDate) : false;
+    const stages = c.startDate ? buildTimelineStages(c.startDate) : [];
+    const currentStageName = stageIdx >= 0 ? stages[stageIdx].name : (c.startDate && c.startDate > todayStr ? '시작 전' : '−');
+    const stageColor = stageIdx >= 0 ? TL_COLORS[stageIdx] : {bg:'rgba(100,100,100,.25)',text:'#888'};
+    const progress = stages.length > 0 ? Math.round((stageIdx+1)/stages.length*100) : 0;
+    return '<div class="camp-card '+(c.isMock?'type-mock':'type-paid')+'" onclick="openCampModal('+i+')">' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">' +
+        '<div class="camp-card-name">'+escH(c.name)+'</div>' +
+        '<span class="camp-type-badge '+(c.isMock?'ctb-mock':'ctb-paid')+'">'+(c.isMock?'Mock':'Paid')+'</span>' +
+      '</div>' +
+      '<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">' +
+        '<span style="font-size:11px;background:'+stageColor.bg+';color:'+stageColor.text+';padding:2px 8px;border-radius:10px">'+escH(currentStageName)+'</span>' +
+        (delayed ? '<span style="font-size:11px;color:var(--red)">⚠ 지연</span>' : '') +
+      '</div>' +
+      (stages.length>0 ? '<div style="background:var(--bg);border-radius:4px;height:4px;overflow:hidden;margin-bottom:10px"><div style="height:4px;border-radius:4px;background:'+stageColor.text+';width:'+progress+'%;transition:width .3s"></div></div>' : '') +
+      '<div class="camp-stats">' +
+        '<div class="cs-item"><div class="cs-val">'+c.creators+'</div><div class="cs-lbl">크리에이터</div></div>' +
+        '<div class="cs-item"><div class="cs-val">'+c.slots+'</div><div class="cs-lbl">슬롯</div></div>' +
+        '<div class="cs-item"><div class="cs-val">'+fmtFee(c.fee)+'</div><div class="cs-lbl">총 지급금액</div></div>' +
+        '<div class="cs-item"><div class="cs-val">'+(c.fee&&c.slots?fmtFee(Math.round(c.fee/c.slots)):'−')+'</div><div class="cs-lbl">평균 단가</div></div>' +
+      '</div>' +
+      '<div class="camp-period">📅 '+(c.startDate||'−')+' ~ '+(c.endDate||'−')+'</div>' +
+      '</div>';
+  }).join('');
 }
 
 function openCampModal(i) {
@@ -702,6 +1102,10 @@ function openCampModal(i) {
   const tlEnd  = stages[stages.length-1].to;
   const totalDays = Math.max(1, daysBetween(tlStartDate, tlEnd));
   const todayStr  = new Date().toISOString().slice(0,10);
+  const currentStageIdx = getCampCurrentStage(tlStartDate);
+  const isDelayed = isCampDelayed(tlStartDate);
+  const isStarted = todayStr >= tlStartDate;
+  const isEnded   = todayStr > tlEnd;
 
   function pct(date) {
     const d = Math.max(0, daysBetween(tlStartDate, date));
@@ -714,58 +1118,75 @@ function openCampModal(i) {
 
   let html = '';
 
-  // Summary
+  // ── Summary
+  const daysLeft = isEnded ? 0 : Math.max(0, Math.ceil((new Date(tlEnd)-new Date(todayStr))/(1000*60*60*24)));
+  const daysElapsed = isStarted ? Math.min(totalDays, Math.ceil((new Date(todayStr)-new Date(tlStartDate))/(1000*60*60*24))) : 0;
+  const overallPct = Math.round(daysElapsed/totalDays*100);
   html += '<div class="modal-section"><div class="modal-sec-title">캠페인 요약</div>' +
     '<div class="summary-nums">' +
     '<div class="sn-item"><div class="sn-val">'+c.creators+'</div><div class="sn-lbl">참여 인원</div></div>' +
     '<div class="sn-item"><div class="sn-val">'+c.slots+'</div><div class="sn-lbl">총 슬롯</div></div>' +
     '<div class="sn-item"><div class="sn-val">'+fmtFee(c.fee)+'</div><div class="sn-lbl">총 지급금액</div></div>' +
     '<div class="sn-item"><div class="sn-val">'+(c.fee&&c.slots?fmtFee(Math.round(c.fee/c.slots)):'−')+'</div><div class="sn-lbl">평균 단가</div></div>' +
-    '</div>' +
-    '<div style="font-size:12px;color:var(--text3);margin-top:4px">가이드라인 링크: −</div>' +
     '</div>';
+  // Status bar
+  if (isStarted) {
+    const statusColor = isDelayed ? 'var(--red)' : isEnded ? 'var(--bound)' : 'var(--accent)';
+    const statusLabel = isDelayed ? '⚠ 일정 지연' : isEnded ? '✓ 완료' : ('D-'+daysLeft+' 남음 · '+(currentStageIdx>=0?stages[currentStageIdx].name:''));
+    html += '<div style="margin-top:12px">' +
+      '<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px">' +
+        '<span style="color:var(--text3)">전체 진행도</span>' +
+        '<span style="color:'+statusColor+';font-weight:600">'+statusLabel+'</span>' +
+      '</div>' +
+      '<div style="background:var(--bg);border-radius:6px;height:8px;overflow:hidden">' +
+        '<div style="height:8px;border-radius:6px;background:'+statusColor+';width:'+overallPct+'%;transition:width .3s"></div>' +
+      '</div>' +
+    '</div>';
+  }
+  html += '</div>';
 
-  // Timeline (Gantt)
+  // ── Timeline (Gantt)
   html += '<div class="modal-section"><div class="modal-sec-title">캠페인 타임라인</div>';
   html += '<div class="timeline-wrap"><div class="timeline-grid">';
 
-  // Header row: date labels every ~5 days
+  // Header row with date range
   html += '<div class="tl-row" style="height:20px">';
   html += '<div class="tl-label" style="font-size:10px;color:var(--text3)">'+fmtDate(tlStartDate)+'</div>';
   html += '<div class="tl-track" style="position:relative">';
+  // End date label
+  html += '<div style="position:absolute;right:0;top:0;font-size:10px;color:var(--text3)">'+fmtDate(tlEnd)+'</div>';
   // today marker
-  if (todayStr >= tlStartDate && todayStr <= tlEnd) {
+  if (isStarted && !isEnded) {
     const tp = pct(todayStr);
     html += '<div class="tl-today-line" style="left:'+tp+'%">' +
       '<div class="tl-today-label">오늘</div></div>';
   }
   html += '</div></div>';
 
-  // Stage rows
+  // Stage rows — highlight current stage
   stages.forEach((s,idx)=>{
     const left  = pct(s.from);
     const width = s.days > 0 ? widthPct(s.from, s.to) : 1;
-    html += '<div class="tl-row">';
-    html += '<div class="tl-label">'+escH(s.name)+'</div>';
+    const isCurrent = idx === currentStageIdx;
+    const isPast    = isStarted && idx < currentStageIdx;
+    const isFuture  = !isStarted || idx > currentStageIdx;
+
+    html += '<div class="tl-row"' + (isCurrent?' style="background:rgba(255,255,255,.04);border-radius:4px"':'') + '>';
+    html += '<div class="tl-label" style="' + (isCurrent?'color:var(--text);font-weight:600':isPast?'color:var(--text3)':'') + '">'+
+      (isCurrent ? '▶ ' : isPast ? '✓ ' : '') + escH(s.name) + '</div>';
     html += '<div class="tl-track">';
+    const segOpacity = isPast ? '0.4' : '1';
+    const segBorder  = isCurrent ? ';border:1.5px solid '+s.color.text+';box-shadow:0 0 6px '+s.color.bg : '';
     html += '<div class="tl-segment" style="' +
       'position:absolute;left:'+left+'%;width:'+Math.max(width,2)+'%;' +
-      'background:'+s.color.bg+';color:'+s.color.text+'">' +
+      'background:'+s.color.bg+';color:'+s.color.text+';opacity:'+segOpacity+segBorder+'">' +
       (s.days>0?s.days+'일':'당일')+'</div>';
     html += '</div></div>';
   });
 
-  // Legend
-  html += '<div class="tl-legend">';
-  stages.forEach(s=>{
-    html += '<div class="tl-legend-item">' +
-      '<div class="tl-legend-dot" style="background:'+s.color.bg+'"></div>' +
-      escH(s.name)+'</div>';
-  });
-  html += '</div>';
   html += '</div></div></div>';
 
-  // Participants table (if real campaign)
+  // ── Participants table (if real campaign)
   if (c.entries && c.entries.length > 0) {
     const byCreator = {};
     c.entries.forEach(e=>{
@@ -777,7 +1198,7 @@ function openCampModal(i) {
     html += '<div class="modal-section"><div class="modal-sec-title">참여 크리에이터</div>';
     html += '<table class="mini-t"><thead><tr><th>TikTok ID</th><th>슬롯</th><th>Fee</th><th>제출일</th></tr></thead><tbody>';
     html += Object.entries(byCreator).map(([tid,v])=>
-      '<tr><td>@'+escH(tid)+'</td><td>'+v.slots+'</td><td>'+fmtFee(v.fee)+'</td><td>'+v.dates.sort().join(', ')+'</td></tr>'
+      '<tr><td><a href="https://www.tiktok.com/@'+escH(tid)+'" target="_blank" style="color:var(--accent);text-decoration:none">@'+escH(tid)+'</a></td><td>'+v.slots+'</td><td>'+fmtFee(v.fee)+'</td><td>'+v.dates.sort().join(', ')+'</td></tr>'
     ).join('');
     html += '</tbody></table></div>';
   }
@@ -849,7 +1270,19 @@ function buildWeekly() {
 function selectWeek(i){currentWeek=i;buildWeekly()}
 
 // ── Tab nav ───────────────────────────────────────────────────────────────
-const TAB_PAGES=['dashboard','influencer','campaigns','weekly'];
+const TAB_PAGES=['dashboard','influencer','campaigns','weekly','monthly'];
+function switchDashView(view){
+  const isOwner = view==='owner';
+  document.getElementById('dash-owner').style.display = isOwner?'block':'none';
+  document.getElementById('dash-ops').style.display   = isOwner?'none':'block';
+  document.getElementById('btn-owner').classList.toggle('active', isOwner);
+  document.getElementById('btn-ops').classList.toggle('active', !isOwner);
+  if(!isOwner){
+    const src=document.getElementById('stage-bars');
+    const dst=document.getElementById('stage-bars-ops');
+    if(src&&dst) dst.innerHTML=src.innerHTML;
+  }
+}
 function switchTab(name){
   document.querySelectorAll('.nav-tab').forEach((t,i)=>t.classList.toggle('active',TAB_PAGES[i]===name));
   document.querySelectorAll('.tab-page').forEach(p=>p.classList.remove('active'));
@@ -972,7 +1405,7 @@ async function fetchLiveData() {
     // CREATORS 재생성 (RAW_CREATORS 업데이트 반영)
     CREATORS = buildCreators();
 
-    buildDashboard(); buildInfluencer(); buildCampaigns(); buildWeekly();
+    buildDashboard(); buildInfluencer(); buildCampaigns(); buildWeekly(); buildMonthly();
 
     const fmt = new Date().toLocaleString('ko-KR', {month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
     timeEl.textContent = '업데이트 ' + fmt;
@@ -985,9 +1418,355 @@ async function fetchLiveData() {
   }
 }
 
+// ── TAB 5: Monthly Analysis ───────────────────────────────────────────────
+let currentMonthIdx = 0; // 최신 월 기준 인덱스
+
+function buildMonthlyData() {
+  // CAMPAIGN_LOG에서 월별 집계
+  const months = {};
+  CAMPAIGN_LOG.forEach(cl => {
+    if (!cl.date || !cl.fee) return;
+    const m = cl.date.slice(0,7); // YYYY-MM
+    if (!months[m]) months[m] = {month:m, totalFee:0, totalSlots:0, entries:[], campaigns:{}};
+    months[m].totalFee   += cl.fee||0;
+    months[m].totalSlots += cl.slot||0;
+    months[m].entries.push(cl);
+    const ck = cl.campaign||'기타';
+    if (!months[m].campaigns[ck]) months[m].campaigns[ck] = {fee:0, slots:0, creators:new Set()};
+    months[m].campaigns[ck].fee    += cl.fee||0;
+    months[m].campaigns[ck].slots  += cl.slot||0;
+    months[m].campaigns[ck].creators.add(cl.tiktokId);
+  });
+  return Object.values(months).sort((a,b)=>a.month.localeCompare(b.month));
+}
+
+function autoComment(monthData, prevData) {
+  if (!monthData) return '';
+  const { month, totalFee, totalSlots, campaigns } = monthData;
+  const avgSlot = totalSlots > 0 ? Math.round(totalFee / totalSlots) : 0;
+  const campArr = Object.entries(campaigns).sort((a,b)=>b[1].fee-a[1].fee);
+  const topCamp = campArr[0];
+  const totalCreators = new Set(monthData.entries.map(e=>e.tiktokId)).size;
+
+  const lines = [];
+
+  // 전월 비교
+  if (prevData) {
+    const diff = totalFee - prevData.totalFee;
+    const pct  = prevData.totalFee > 0 ? Math.round(Math.abs(diff)/prevData.totalFee*100) : 0;
+    if (diff > 0)      lines.push('전월 대비 총 지급액이 <strong style="color:var(--bound)">+'+fmtFee(diff)+' (+'+pct+'%)</strong> 증가했어요.');
+    else if (diff < 0) lines.push('전월 대비 총 지급액이 <strong style="color:var(--red)">'+fmtFee(diff)+' (−'+pct+'%)</strong> 줄었어요.');
+    else               lines.push('전월과 동일한 총 지급액이에요.');
+
+    const slotDiff = totalSlots - prevData.totalSlots;
+    if (slotDiff !== 0) lines.push('슬롯 수는 전월 대비 <strong>'+(slotDiff>0?'+':'')+slotDiff+'개</strong>로 '+totalSlots+'개 집행됐어요.');
+  }
+
+  // 상위 캠페인
+  if (topCamp) {
+    const share = totalFee > 0 ? Math.round(topCamp[1].fee/totalFee*100) : 0;
+    lines.push('가장 큰 캠페인은 <strong style="color:var(--accent)">'+escH(topCamp[0])+'</strong>으로 총 '+fmtFee(topCamp[1].fee)+' (전체의 '+share+'%)를 차지했어요.');
+  }
+
+  // 슬롯 평균 단가 판정
+  if (avgSlot >= 150000)     lines.push('슬롯당 평균 단가 <strong>'+fmtFee(avgSlot)+'</strong> — 고단가 캠페인 위주로 운영된 달이에요. 👍');
+  else if (avgSlot >= 80000) lines.push('슬롯당 평균 단가 <strong>'+fmtFee(avgSlot)+'</strong> — 중간 단가로 균형 있게 운영됐어요.');
+  else if (avgSlot > 0)      lines.push('슬롯당 평균 단가 <strong>'+fmtFee(avgSlot)+'</strong> — 저단가 캠페인이 많았어요. 단가 협상 여지를 검토해보세요.');
+
+  // 크리에이터 수
+  lines.push('이달 정산 대상 크리에이터는 총 <strong>'+totalCreators+'명</strong>이에요.');
+
+  return lines.join(' ');
+}
+
+function renderMonthlyTrendChart(allMonths, curIdx) {
+  if (allMonths.length === 0) return '<div style="color:var(--text3);font-size:13px">데이터 없음</div>';
+
+  const maxFee = Math.max(...allMonths.map(m=>m.totalFee), 1);
+  const BAR_H = 120;
+  let html = '<div style="display:flex;align-items:flex-end;gap:6px;height:'+(BAR_H+40)+'px;padding-top:10px">';
+  allMonths.forEach((m, i) => {
+    const barH = Math.round((m.totalFee/maxFee)*BAR_H);
+    const isCur = i === curIdx;
+    const label = m.month.slice(5)+'월'; // MM월
+    html += '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer" onclick="selectMonth('+i+')">' +
+      '<div style="font-size:10px;color:'+(isCur?'var(--text)':'var(--text3)')+'">'+fmtFee(m.totalFee)+'</div>' +
+      '<div style="width:100%;border-radius:4px 4px 0 0;background:'+(isCur?'var(--accent)':'rgba(96,165,250,.35)')+';height:'+barH+'px;transition:height .3s"></div>' +
+      '<div style="font-size:10px;color:'+(isCur?'var(--accent)':'var(--text3)')+';font-weight:'+(isCur?'700':'400')+'">'+label+'</div>' +
+    '</div>';
+  });
+  html += '</div>';
+  return html;
+}
+
+function renderMonthlyCampChart(monthData) {
+  if (!monthData) return '<div style="color:var(--text3);font-size:13px">데이터 없음</div>';
+  const campArr = Object.entries(monthData.campaigns).sort((a,b)=>b[1].fee-a[1].fee);
+  if (campArr.length === 0) return '<div style="color:var(--text3);font-size:13px">캠페인 데이터 없음</div>';
+  const maxFee = Math.max(...campArr.map(c=>c[1].fee), 1);
+  const COLORS = ['#60a5fa','#a78bfa','#34d399','#f59e0b','#f87171','#fb923c'];
+
+  let html = '<div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">';
+  campArr.forEach(([name, data], i) => {
+    const barW = Math.round((data.fee/maxFee)*100);
+    const avgPerSlot = data.slots > 0 ? Math.round(data.fee/data.slots) : 0;
+    const color = COLORS[i % COLORS.length];
+    html +=
+      '<div>' +
+      '<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">' +
+        '<span style="color:var(--text2);font-weight:600">'+escH(name)+'</span>' +
+        '<span style="color:var(--text3)">'+(data.creators.size)+'명 · '+data.slots+'슬롯 · 단가 '+fmtFee(avgPerSlot)+'</span>' +
+      '</div>' +
+      '<div style="background:var(--bg);border-radius:4px;height:8px;overflow:hidden">' +
+        '<div style="height:8px;border-radius:4px;background:'+color+';width:'+barW+'%;transition:width .4s"></div>' +
+      '</div>' +
+      '<div style="text-align:right;font-size:11px;font-weight:700;color:'+color+';margin-top:2px">'+fmtFee(data.fee)+'</div>' +
+      '</div>';
+  });
+  html += '</div>';
+  return html;
+}
+
+function renderMonthlyDetailTable(monthData) {
+  if (!monthData || monthData.entries.length === 0) return '<div style="color:var(--text3);font-size:13px">데이터 없음</div>';
+  // 사람별 합산
+  const byPerson = {};
+  monthData.entries.forEach(cl => {
+    if (!cl.fee) return;
+    if (!byPerson[cl.tiktokId]) byPerson[cl.tiktokId] = {fee:0, entries:[]};
+    byPerson[cl.tiktokId].fee += cl.fee;
+    byPerson[cl.tiktokId].entries.push(cl);
+  });
+  const sorted = Object.entries(byPerson).sort((a,b)=>b[1].fee-a[1].fee);
+  let html = '<div style="font-size:11px;color:var(--text3);margin-bottom:8px">총 '+sorted.length+'명 · '+fmtFee(monthData.totalFee)+'</div>';
+  html += '<div style="max-height:260px;overflow-y:auto">';
+  html += '<table style="width:100%;font-size:12px;border-collapse:collapse">';
+  html += '<thead><tr style="color:var(--text3);border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg2)">' +
+    '<th style="padding:4px 0;text-align:left">크리에이터</th>' +
+    '<th style="padding:4px;text-align:left">캠페인</th>' +
+    '<th style="text-align:right">슬롯</th>' +
+    '<th style="text-align:right;padding-left:8px">금액</th>' +
+    '</tr></thead><tbody>';
+  sorted.forEach(([tid, v], idx) => {
+    const campNames = [...new Set(v.entries.map(e=>e.campaign).filter(Boolean))];
+    const totalSlots = v.entries.reduce((s,e)=>s+(e.slot||0),0);
+    const multiCamp = v.entries.length > 1;
+    const rowId = 'mdt-'+idx;
+    html +=
+      '<tr style="border-bottom:1px solid rgba(255,255,255,.04);cursor:'+(multiCamp?'pointer':'default')+'" onclick="'+(multiCamp?'var el=document.getElementById(\''+rowId+'\');el.style.display=el.style.display===\'none\'?\'table-row\':\'none\'':'')+'">' +
+        '<td style="padding:6px 0">' +
+          '<a href="https://www.tiktok.com/@'+escH(tid)+'" target="_blank" onclick="event.stopPropagation()" style="color:var(--accent);text-decoration:none;font-size:11px">@'+escH(tid)+'</a>' +
+        '</td>' +
+        '<td style="padding:6px 4px;color:var(--text3);font-size:11px">'+campNames.join(', ')+(multiCamp?' ▾':'')+'</td>' +
+        '<td style="text-align:right;color:var(--text3)">'+totalSlots+'</td>' +
+        '<td style="text-align:right;font-weight:700;color:var(--text2);padding-left:8px">'+fmtFee(v.fee)+'</td>' +
+      '</tr>';
+    if (multiCamp) {
+      html += '<tr id="'+rowId+'" style="display:none"><td colspan="4" style="padding:4px 0 8px 16px">' +
+        '<table style="width:100%;font-size:11px;border-collapse:collapse">';
+      v.entries.forEach(e => {
+        html += '<tr><td style="color:var(--text3);padding:2px 0">'+escH(e.campaign||'−')+'</td>' +
+          '<td style="text-align:right;color:var(--text3)">'+fmtDate(e.date)+'</td>' +
+          '<td style="text-align:right;color:var(--text2);padding-left:8px">'+fmtFee(e.fee)+'</td></tr>';
+      });
+      html += '</table></td></tr>';
+    }
+  });
+  html += '</tbody></table></div>';
+  return html;
+}
+
+function renderMonthlyEfficiency(monthData, prevData) {
+  if (!monthData) return '<div style="color:var(--text3);font-size:13px">데이터 없음</div>';
+  const avgSlot = monthData.totalSlots > 0 ? Math.round(monthData.totalFee/monthData.totalSlots) : 0;
+  const totalCreators = new Set(monthData.entries.map(e=>e.tiktokId)).size;
+  const campCount = Object.keys(monthData.campaigns).length;
+  const prevAvgSlot = prevData && prevData.totalSlots > 0 ? Math.round(prevData.totalFee/prevData.totalSlots) : null;
+  const prevCreators = prevData ? new Set(prevData.entries.map(e=>e.tiktokId)).size : null;
+
+  function effRow(label, val, prev, unit, higherIsBetter) {
+    let delta = '';
+    if (prev !== null && prev !== undefined) {
+      const diff = typeof val === 'number' ? val - prev : 0;
+      if (diff > 0) delta = '<span style="color:'+(higherIsBetter?'var(--bound)':'var(--red)')+'">▲ '+(unit==='원'?fmtFee(diff):diff+unit)+'</span>';
+      else if (diff < 0) delta = '<span style="color:'+(higherIsBetter?'var(--red)':'var(--bound)')+'">▼ '+(unit==='원'?fmtFee(Math.abs(diff)):Math.abs(diff)+unit)+'</span>';
+      else delta = '<span style="color:var(--text3)">±0</span>';
+    }
+    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)">' +
+      '<div>' +
+        '<div style="font-size:12px;color:var(--text3)">'+label+'</div>' +
+        '<div style="font-size:18px;font-weight:700;color:var(--text);margin-top:3px">'+(unit==='원'?fmtFee(val):val+unit)+'</div>' +
+      '</div>' +
+      (delta ? '<div style="font-size:12px">'+delta+'</div>' : '') +
+    '</div>';
+  }
+
+  let html = '';
+  html += effRow('총 지급액', monthData.totalFee, prevData?.totalFee, '원', false);
+  html += effRow('슬롯당 평균 단가', avgSlot, prevAvgSlot, '원', false);
+  html += effRow('총 슬롯 수', monthData.totalSlots, prevData?.totalSlots, '개', true);
+  html += effRow('정산 크리에이터 수', totalCreators, prevCreators, '명', true);
+  html += '<div style="padding:10px 0">' +
+    '<div style="font-size:12px;color:var(--text3)">캠페인 수</div>' +
+    '<div style="font-size:18px;font-weight:700;color:var(--text);margin-top:3px">'+campCount+'개</div>' +
+    '</div>';
+  return html;
+}
+
+function renderMonthlyTypeBreakdown(monthData, allMonths) {
+  if (!monthData || monthData.entries.length === 0) return '<div style="color:var(--text3);font-size:13px">데이터 없음</div>';
+
+  // 유형 레이블 매핑 (Campaign_Log 시트 드롭다운 기준)
+  const TYPE_LABELS = {
+    'smallpaid':  'Small Paid',     // 소액 유료 콘텐츠
+    'USP_1month': 'USP 1개월',      // 1개월 USP 계약
+    'paid':       'Paid',
+    'ugc':        'UGC',
+    'organic':    'Organic',
+    'gifted':     'Gifted',
+    'barter':     'Barter',
+    'collab':     'Collab',
+  };
+
+  // 이달 유형별 집계
+  const byType = {};
+  monthData.entries.forEach(cl => {
+    const t = cl.type || '기타';
+    if (!byType[t]) byType[t] = {fee:0, slots:0, count:0, creators:new Set(), campaigns:new Set()};
+    byType[t].fee    += cl.fee||0;
+    byType[t].slots  += cl.slot||0;
+    byType[t].count  += 1;
+    byType[t].creators.add(cl.tiktokId);
+    if (cl.campaign) byType[t].campaigns.add(cl.campaign);
+  });
+
+  // 전체 월 기준 유형별 트렌드 (최근 6개월)
+  const recentMonths = allMonths.slice(-6);
+  const allTypes = [...new Set(allMonths.flatMap(m=>m.entries.map(e=>e.type||'기타')))];
+  const COLORS = ['#60a5fa','#a78bfa','#34d399','#f59e0b','#f87171','#fb923c','#38bdf8'];
+
+  const typeArr = Object.entries(byType).sort((a,b)=>b[1].fee-a[1].fee);
+  if (typeArr.length === 0) return '<div style="color:var(--text3);font-size:13px">유형 데이터 없음</div>';
+
+  const maxTypeFee = Math.max(...typeArr.map(t=>t[1].fee), 1);
+  const totalFee   = monthData.totalFee;
+
+  let html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:20px">';
+  typeArr.forEach(([type, data], idx) => {
+    const label   = TYPE_LABELS[type] || type;
+    const avgSlot = data.slots > 0 ? Math.round(data.fee/data.slots) : 0;
+    const share   = totalFee > 0 ? Math.round(data.fee/totalFee*100) : 0;
+    const color   = COLORS[idx % COLORS.length];
+    html +=
+      '<div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;border-left:3px solid '+color+'">' +
+        '<div style="font-size:11px;color:var(--text3);margin-bottom:6px">'+escH(label)+'</div>' +
+        '<div style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px">'+fmtFee(data.fee)+
+          '<span style="font-size:11px;color:var(--text3);font-weight:400;margin-left:4px">'+share+'%</span>' +
+        '</div>' +
+        '<div style="background:var(--bg2);border-radius:3px;height:4px;margin-bottom:10px">' +
+          '<div style="height:4px;border-radius:3px;background:'+color+';width:'+share+'%"></div>' +
+        '</div>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:11px">' +
+          '<div><span style="color:var(--text3)">슬롯당</span><br><span style="color:var(--text2);font-weight:600">'+fmtFee(avgSlot)+'</span></div>' +
+          '<div><span style="color:var(--text3)">크리에이터</span><br><span style="color:var(--text2);font-weight:600">'+data.creators.size+'명</span></div>' +
+          '<div><span style="color:var(--text3)">슬롯</span><br><span style="color:var(--text2);font-weight:600">'+data.slots+'개</span></div>' +
+          '<div><span style="color:var(--text3)">캠페인</span><br><span style="color:var(--text2);font-weight:600">'+data.campaigns.size+'개</span></div>' +
+        '</div>' +
+      '</div>';
+  });
+  html += '</div>';
+
+  // 월별 유형 트렌드 (스택 바)
+  if (recentMonths.length > 1 && allTypes.length > 0) {
+    html += '<div style="font-size:12px;color:var(--text2);font-weight:600;margin-bottom:10px">월별 유형 추이</div>';
+    html += '<div style="display:flex;align-items:flex-end;gap:8px;height:100px">';
+    const maxMonthFee = Math.max(...recentMonths.map(m=>m.totalFee), 1);
+    recentMonths.forEach((m, mi) => {
+      const barH = Math.round((m.totalFee/maxMonthFee)*80);
+      const isCur = m.month === monthData.month;
+      // 유형별 비율 계산
+      const typeFeesInMonth = {};
+      m.entries.forEach(e => {
+        const t = e.type||'기타';
+        typeFeesInMonth[t] = (typeFeesInMonth[t]||0) + (e.fee||0);
+      });
+      const monthTotalFee = m.totalFee || 1;
+      html += '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px">' +
+        '<div style="width:100%;display:flex;flex-direction:column;justify-content:flex-end;height:80px;border-radius:4px 4px 0 0;overflow:hidden">';
+      // 역순으로 쌓아서 아래가 첫 번째
+      allTypes.forEach((t, ti) => {
+        const segFee = typeFeesInMonth[t]||0;
+        const segH   = Math.round((segFee/monthTotalFee)*barH);
+        if (segH > 0) {
+          html += '<div style="width:100%;height:'+segH+'px;background:'+COLORS[ti%COLORS.length]+(isCur?'':'88')+'"></div>';
+        }
+      });
+      html += '</div>' +
+        '<div style="font-size:10px;color:'+(isCur?'var(--accent)':'var(--text3)')+';font-weight:'+(isCur?'700':'400')+'">'+m.month.slice(5)+'월</div>' +
+      '</div>';
+    });
+    html += '</div>';
+    // 범례
+    html += '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">';
+    allTypes.forEach((t, ti) => {
+      html += '<div style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text3)">' +
+        '<div style="width:10px;height:10px;border-radius:2px;background:'+COLORS[ti%COLORS.length]+'"></div>' +
+        escH(TYPE_LABELS[t]||t) + '</div>';
+    });
+    html += '</div>';
+  }
+
+  return html;
+}
+
+function buildMonthly() {
+  const allMonths = buildMonthlyData();
+  if (allMonths.length === 0) {
+    ['monthly-month-tabs','monthly-auto-comment','monthly-trend-chart',
+     'monthly-camp-chart','monthly-detail-table','monthly-efficiency','monthly-type-breakdown'].forEach(id => {
+      document.getElementById(id).innerHTML = '<div style="color:var(--text3);font-size:13px">데이터 없음</div>';
+    });
+    return;
+  }
+
+  // 기본 선택: 현재 달이 있으면 그걸로, 없으면 마지막 달
+  const todayMonth = new Date().toISOString().slice(0,7);
+  const todayIdx = allMonths.findIndex(m=>m.month===todayMonth);
+  if (currentMonthIdx >= allMonths.length) currentMonthIdx = allMonths.length-1;
+
+  // 월 탭
+  document.getElementById('monthly-month-tabs').innerHTML = allMonths.map((m,i) => {
+    const label = m.month.replace('-','년 ')+'월';
+    const isCur = i === currentMonthIdx;
+    return '<div class="week-tab'+(isCur?' active':'')+'" onclick="selectMonth('+i+')">'+label+'</div>';
+  }).join('');
+
+  const cur  = allMonths[currentMonthIdx];
+  const prev = currentMonthIdx > 0 ? allMonths[currentMonthIdx-1] : null;
+
+  // 자동 코멘트
+  const comment = autoComment(cur, prev);
+  document.getElementById('monthly-auto-comment').innerHTML = comment
+    ? '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;font-size:13px;line-height:1.7;color:var(--text2)">💡 '+comment+'</div>'
+    : '';
+
+  // 차트 & 패널
+  document.getElementById('monthly-trend-chart').innerHTML  = renderMonthlyTrendChart(allMonths, currentMonthIdx);
+  document.getElementById('monthly-camp-chart').innerHTML   = renderMonthlyCampChart(cur);
+  document.getElementById('monthly-detail-table').innerHTML = renderMonthlyDetailTable(cur);
+  document.getElementById('monthly-efficiency').innerHTML   = renderMonthlyEfficiency(cur, prev);
+  document.getElementById('monthly-type-breakdown').innerHTML = renderMonthlyTypeBreakdown(cur, allMonths);
+}
+
+function selectMonth(i) {
+  currentMonthIdx = i;
+  buildMonthly();
+}
+
 // ── Init ──────────────────────────────────────────────────────────────────
-buildDashboard(); buildInfluencer(); buildCampaigns(); buildWeekly();
+buildDashboard(); buildInfluencer(); buildCampaigns(); buildWeekly(); buildMonthly();
 
 </script>
 </body>
 </html>
+```
