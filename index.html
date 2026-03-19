@@ -320,6 +320,41 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 .weekly-t td{padding:9px 12px;font-size:12px;border-bottom:1px solid var(--bg3)}
 .weekly-t tr.current-week td{background:rgba(124,58,237,.08);font-weight:600}
 
+/* ── Goal tracker (Layer 1) ── */
+.goal-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
+@media(max-width:960px){.goal-row{grid-template-columns:1fr}}
+.goal-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px 22px}
+.goal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.goal-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.7px}
+.goal-delta{font-size:11px;font-weight:600}
+.goal-nums{display:flex;align-items:baseline;gap:6px;margin-bottom:10px}
+.goal-current{font-size:32px;font-weight:800;color:var(--text);letter-spacing:-1px;line-height:1}
+.goal-target{font-size:14px;color:var(--text3);font-weight:500}
+.goal-bar-track{width:100%;height:8px;background:var(--bg3);border-radius:10px;overflow:hidden}
+.goal-bar-fill{height:100%;border-radius:10px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+.goal-pct{font-size:11px;color:var(--text3);margin-top:6px;text-align:right}
+
+/* ── Bottleneck diagnosis (Layer 2) ── */
+.diag-panel{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin-bottom:18px}
+.diag-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+@media(max-width:960px){.diag-grid{grid-template-columns:repeat(2,1fr)}}
+.diag-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px}
+.diag-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.diag-signal{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.diag-signal.sig-red{background:var(--red)}.diag-signal.sig-yellow{background:var(--orange)}.diag-signal.sig-green{background:var(--green)}
+.diag-metric{font-size:15px;font-weight:700;color:var(--text);margin-bottom:2px}
+.diag-sub{font-size:11px;color:var(--text3)}
+.diag-verdict{font-size:13px;color:var(--text2);line-height:1.5;padding:12px 14px;background:var(--bg3);border-radius:10px;border-left:3px solid var(--accent)}
+
+/* ── Revenue formula (Layer 3) ── */
+.formula-panel{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin-bottom:18px}
+.formula-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.formula-item{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px 16px;text-align:center}
+.formula-item-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
+.formula-item-val{font-size:20px;font-weight:800;color:var(--text);letter-spacing:-.3px}
+.formula-op{font-size:18px;color:var(--text3);font-weight:700}
+.formula-result{font-size:13px;color:var(--text2);margin-top:6px}
+
 /* ── Toast ── */
 #toast{position:fixed;bottom:24px;left:50%;
   transform:translateX(-50%) translateY(20px);
@@ -377,15 +412,30 @@ const CAMPAIGN_STAGES=[{"name": "인플 디스커버리", "days": 3}, {"name": "
 
     <!-- ── 오너 뷰 ── -->
     <div id="dash-owner">
-      <!-- KPI -->
-      <div class="kpi-row" id="kpi-row"></div>
+      <!-- Layer 1: 목표 vs 현재 -->
+      <div class="goal-row" id="goal-row"></div>
 
-      <!-- 파이프라인 + 바인딩 일정 -->
+      <!-- Layer 2: 4관점 병목 진단 -->
+      <div class="diag-panel">
+        <div class="panel-title">병목 진단</div>
+        <div class="diag-grid" id="diag-grid"></div>
+        <div class="diag-verdict" id="diag-verdict"></div>
+      </div>
+
+      <!-- Layer 3: 매출 공식 -->
+      <div class="formula-panel">
+        <div class="panel-title">매출 공식</div>
+        <div class="formula-row" id="formula-row"></div>
+        <div class="formula-result" id="formula-result"></div>
+      </div>
+
+      <!-- Layer 4: 파이프라인 + 슬롯 -->
       <div class="two-col">
         <div>
           <div class="panel" style="margin-bottom:14px">
             <div class="panel-title">파이프라인 현황</div>
             <div id="stage-bars"></div>
+            <div id="pipeline-conversion" style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)"></div>
           </div>
         </div>
         <div>
@@ -399,9 +449,6 @@ const CAMPAIGN_STAGES=[{"name": "인플 디스커버리", "days": 3}, {"name": "
           </div>
         </div>
       </div>
-
-      <!-- 이번달 스탯 -->
-      <div class="stat-row" id="bottom-stats"></div>
 
       <!-- DoD -->
       <div class="panel" style="margin-top:16px">
@@ -604,22 +651,19 @@ const CAMP_META = {};
 CAMPAIGN_LOG.forEach(cl => {
   if (!cl.campaign) return;
   const n = cl.campaign;
-  if (!CAMP_META[n]) CAMP_META[n] = {name:n,creatorSet:new Set(),slots:0,fee:0,dates:[],entries:[]};
+  if (!CAMP_META[n]) CAMP_META[n] = {name:n,creatorSet:new Set(),slots:0,fee:0,dates:[],entries:[],campStartDate:''};
   CAMP_META[n].creatorSet.add(cl.tiktokId);
   CAMP_META[n].slots += cl.slot||0;
   CAMP_META[n].fee   += cl.fee||0;
   if (cl.date) CAMP_META[n].dates.push(cl.date);
+  if (cl.campStart && !CAMP_META[n].campStartDate) CAMP_META[n].campStartDate = cl.campStart;
   CAMP_META[n].entries.push(cl);
 });
 const CAMPAIGNS = Object.values(CAMP_META).map(c=>({
   ...c, creators:c.creatorSet.size,
-  startDate: c.dates.length ? c.dates.sort()[0] : null,
+  startDate: c.campStartDate || (c.dates.length ? c.dates.sort()[0] : null),
   endDate:   c.dates.length ? c.dates.sort().slice(-1)[0] : null
 }));
-CAMPAIGNS.push({
-  name:'Project Aurora',creators:15,slots:15,fee:1800000,
-  startDate:'2026-04-07',endDate:'2026-04-28',entries:[],isMock:true
-});
 
 // Timeline stage colours
 const TL_COLORS = [
@@ -824,35 +868,147 @@ function buildDashboard() {
   const bound       = CREATORS.filter(c=>c.stage==='Bound');
   const totalSlots  = bound.reduce((s,c)=>s+c.slotNum,0);
   const usedSlots   = bound.reduce((s,c)=>s+c.usedSlot,0);
-  const leftSlots   = totalSlots-usedSlots;
-  const projSlots   = Math.round(totalSlots*1.15);
-  const overdue     = CREATORS.filter(c=>isOverdue(c)&&c.stage!=='Dropped').length;
+  const thisMonth   = new Date().toISOString().slice(0,7);
+  const yearGP      = CAMPAIGN_LOG.reduce((s,cl)=>s+(cl.fee||0),0);
+  const activeCamps = CAMPAIGNS.filter(c=>!c.isMock).length;
+  const boundCount  = bound.length;
+  const bindingOffered = CREATORS.filter(c=>c.stage==='Binding Offered').length;
+  const quality     = CREATORS.filter(c=>c.stage==='Quality').length;
 
-  document.getElementById('kpi-row').innerHTML = [
-    {label:'Bound 슬롯',val:totalSlots,delta:'+2',up:true, cls:'accent-bound'},
-    {label:'이번달 사용',val:usedSlots, delta:'+3',up:true, cls:'accent-blue'},
-    {label:'남은 슬롯',  val:leftSlots, delta:'-1',up:false,cls:'accent-purple'},
-    {label:'Projected',  val:projSlots, delta:'+5',up:true, cls:'accent-purple'},
-    {label:'오버듀 액션',val:overdue,   delta:'-2',up:false,cls:'accent-red'},
-  ].map(k=>'<div class="kpi-card '+k.cls+'">' +
-    '<div class="kpi-label">'+k.label+'</div>' +
-    '<div class="kpi-val">'+k.val+'</div>' +
-    '<div class="kpi-delta '+(k.up?'delta-up':'delta-dn')+'">'+(k.up?'↑':'↓')+' '+k.delta+' vs 전주</div></div>'
+  // ── Layer 1: 목표 vs 현재 (갭) ──
+  const BIND_TARGET = 40;
+  const GP_TARGET   = 100000000; // 1억
+  const slotUtil    = totalSlots ? Math.round(usedSlots/totalSlots*100) : 0;
+  const bindPct     = Math.round(boundCount/BIND_TARGET*100);
+  const gpPct       = Math.round(yearGP/GP_TARGET*100);
+
+  document.getElementById('goal-row').innerHTML = [
+    {label:'바인딩',current:boundCount,target:BIND_TARGET,pct:bindPct,
+     color:'var(--bound)',delta:'Quality '+quality+' / Offered '+bindingOffered},
+    {label:'슬롯 활용률',current:usedSlots,target:totalSlots||1,pct:slotUtil,
+     color:slotUtil<30?'var(--red)':slotUtil<60?'var(--orange)':'var(--green)',
+     delta:'남은 슬롯 '+(totalSlots-usedSlots)+'개'},
+    {label:'연간 GP',current:fmtFee(yearGP),target:'1억',pct:gpPct,
+     color:'var(--accent2)',delta:'목표 대비 '+(GP_TARGET-yearGP>0?fmtFee(GP_TARGET-yearGP)+' 부족':'달성!')},
+  ].map(g=>{
+    const cur = typeof g.current==='number' ? g.current : g.current;
+    const tgt = typeof g.target==='number' ? g.target : g.target;
+    return '<div class="goal-card">' +
+      '<div class="goal-header"><div class="goal-label">'+g.label+'</div></div>' +
+      '<div class="goal-nums"><span class="goal-current">'+cur+'</span><span class="goal-target">/ '+tgt+'</span></div>' +
+      '<div class="goal-bar-track"><div class="goal-bar-fill" style="width:'+Math.min(g.pct,100)+'%;background:'+g.color+'"></div></div>' +
+      '<div class="goal-pct" style="display:flex;justify-content:space-between"><span style="color:var(--text3);font-size:11px">'+g.delta+'</span><span>'+g.pct+'%</span></div>' +
+    '</div>';
+  }).join('');
+
+  // ── Layer 2: 4관점 병목 진단 ──
+  const qaTotal   = CREATORS.filter(c=>['Quality','Binding Offered','Bound'].includes(c.stage)).length;
+  const qaPassed  = CREATORS.filter(c=>c.bcScore&&c.bcScore.latestResult==='통과').length;
+  const qaRate    = qaTotal ? Math.round(qaPassed/qaTotal*100) : 0;
+  const avgMargin = CAMPAIGN_LOG.length ? Math.round(CAMPAIGN_LOG.reduce((s,cl)=>s+(cl.fee||0),0)/CAMPAIGN_LOG.length) : 0;
+
+  const diags = [
+    {key:'Revenue',label:'Revenue',
+     metric: activeCamps+'개 캠페인',
+     sub: '슬롯 활용률 '+slotUtil+'%',
+     signal: activeCamps<=2?'sig-red':activeCamps<=4?'sig-yellow':'sig-green'},
+    {key:'Creator',label:'Creator',
+     metric: boundCount+'명 바인딩',
+     sub: '가용 슬롯 '+(totalSlots-usedSlots)+'개',
+     signal: (totalSlots-usedSlots)>20?'sig-green':(totalSlots-usedSlots)>5?'sig-yellow':'sig-red'},
+    {key:'Brand',label:'Brand / Demand',
+     metric: activeCamps+'개 진행 중',
+     sub: '캠페인 파이프라인 데이터 필요',
+     signal: activeCamps<=2?'sig-red':'sig-yellow'},
+    {key:'Ops',label:'Ops / QA',
+     metric: 'QA 통과율 '+qaRate+'%',
+     sub: '제출 '+qaTotal+'건 / 통과 '+qaPassed+'건',
+     signal: qaRate<20?'sig-red':qaRate<50?'sig-yellow':'sig-green'},
+  ];
+
+  document.getElementById('diag-grid').innerHTML = diags.map(d=>
+    '<div class="diag-card">' +
+    '<div class="diag-label"><span class="diag-signal '+d.signal+'"></span>'+d.label+'</div>' +
+    '<div class="diag-metric">'+d.metric+'</div>' +
+    '<div class="diag-sub">'+d.sub+'</div></div>'
   ).join('');
 
-  // Stage bars
+  // 병목 자동 진단
+  const bottlenecks = diags.filter(d=>d.signal==='sig-red');
+  let verdict = '';
+  if (bottlenecks.length===0) {
+    verdict = '모든 관점이 양호합니다. 현재 페이스를 유지하세요.';
+  } else {
+    const names = bottlenecks.map(d=>d.label).join(', ');
+    if (bottlenecks.some(d=>d.key==='Revenue') && bottlenecks.some(d=>d.key==='Brand')) {
+      verdict = '진단: 크리에이터 공급은 충분하지만 캠페인(수요)이 부족합니다. → 레버: 캠페인 수(N)를 늘리는 것이 최고 레버리지';
+    } else if (bottlenecks.some(d=>d.key==='Creator')) {
+      verdict = '진단: 크리에이터 풀이 부족합니다. → 레버: 스카우팅 가속 또는 바인딩 전환율 개선';
+    } else if (bottlenecks.some(d=>d.key==='Ops')) {
+      verdict = '진단: QA 통과율이 낮습니다. → 레버: 가이드라인 브리핑 강화 또는 컷별 가이드라인 도입';
+    } else {
+      verdict = '병목 감지: '+names+'. 해당 영역의 데이터를 확인하세요.';
+    }
+  }
+  document.getElementById('diag-verdict').innerHTML = verdict;
+
+  // ── Layer 3: 매출 공식 ──
+  const campCount     = activeCamps;
+  const avgCreators   = campCount ? Math.round(CAMPAIGN_LOG.length/campCount*10)/10 : 0;
+  const monthlyGP     = CAMPAIGN_LOG.filter(cl=>cl.date&&cl.date.slice(0,7)===thisMonth).reduce((s,cl)=>s+(cl.fee||0),0);
+  const monthTarget   = Math.round(GP_TARGET/12);
+
+  document.getElementById('formula-row').innerHTML =
+    '<div class="formula-item"><div class="formula-item-label">캠페인 수</div><div class="formula-item-val">'+campCount+'</div></div>' +
+    '<div class="formula-op">×</div>' +
+    '<div class="formula-item"><div class="formula-item-label">캠페인당 크리에이터</div><div class="formula-item-val">'+avgCreators+'</div></div>' +
+    '<div class="formula-op">×</div>' +
+    '<div class="formula-item"><div class="formula-item-label">건당 지급액</div><div class="formula-item-val">'+fmtFee(avgMargin)+'</div></div>' +
+    '<div class="formula-op">=</div>' +
+    '<div class="formula-item" style="border-color:var(--accent)"><div class="formula-item-label">이번달 지급 합계</div><div class="formula-item-val" style="color:var(--accent2)">'+fmtFee(monthlyGP)+'</div></div>';
+
+  // 목표 달성에 필요한 캠페인 수 역산
+  const neededMonthly = monthTarget;
+  const avgDealSize   = avgCreators * avgMargin;
+  const neededCamps   = avgDealSize>0 ? Math.ceil(neededMonthly/avgDealSize) : '?';
+  document.getElementById('formula-result').innerHTML =
+    '월 목표 '+fmtFee(monthTarget)+' 달성에 월 약 <strong>'+neededCamps+'개 캠페인</strong> 필요 (현재 평균 딜 사이즈 '+fmtFee(Math.round(avgDealSize))+' 기준)';
+
+  // ── Layer 4: 파이프라인 + 슬롯 (기존 유지 + 전환율 추가) ──
   const stages = ['Contacting','Onboarding','Test','USP','Muga','Quality','Binding Offered','Bound','Dropped'];
   const stageColors = {'Contacting':'var(--contact)','Onboarding':'var(--onboard)','Test':'#0ea5e9',
     'USP':'#6ee7b7','Muga':'var(--bound)','Quality':'var(--quality)',
     'Binding Offered':'var(--offer)','Bound':'var(--bound)','Dropped':'var(--dropped)'};
   const counts = {};
   CREATORS.forEach(c=>{counts[c.stage]=(counts[c.stage]||0)+1});
-  const maxC = Math.max(...Object.values(counts));
+  const maxC = Math.max(...Object.values(counts),1);
   document.getElementById('stage-bars').innerHTML = stages.filter(s=>counts[s]).map(s=>
     '<div class="stage-bar-item"><div class="stage-bar-label">'+s+'</div>' +
     '<div class="stage-bar-track"><div class="stage-bar-fill" style="width:'+Math.round(counts[s]/maxC*100)+'%;background:'+stageColors[s]+'"></div></div>' +
     '<div class="stage-bar-count">'+counts[s]+'</div></div>'
   ).join('');
+
+  // 전환율
+  const contact = counts['Contacting']||0;
+  const onboard = counts['Onboarding']||0;
+  const testN   = counts['Test']||0;
+  const qualN   = counts['Quality']||0;
+  const boundN  = counts['Bound']||0;
+  const droppedN = counts['Dropped']||0;
+  const totalActive = contact+onboard+testN+(counts['USP']||0)+(counts['Muga']||0)+qualN+(counts['Binding Offered']||0)+boundN;
+  const pipelineConv = [
+    {from:'Contact→Onboard', rate:contact>0?Math.round((onboard+testN+qualN+boundN)/(contact+onboard+testN+qualN+boundN)*100):0},
+    {from:'Onboard→Quality', rate:(onboard+testN)>0?Math.round((qualN+boundN)/(onboard+testN+qualN+boundN)*100):0},
+    {from:'Quality→Bound', rate:qualN>0?Math.round(boundN/(qualN+boundN)*100):0},
+    {from:'전체 드롭률', rate:totalActive+droppedN>0?Math.round(droppedN/(totalActive+droppedN)*100):0},
+  ];
+  document.getElementById('pipeline-conversion').innerHTML =
+    '<div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">전환율 (누적)</div>' +
+    pipelineConv.map(p=>
+      '<div style="display:flex;justify-content:space-between;align-items:center;padding:3px 0;font-size:12px">' +
+      '<span style="color:var(--text2)">'+p.from+'</span>' +
+      '<span style="font-weight:700;color:'+(p.from==='전체 드롭률'?(p.rate>30?'var(--red)':'var(--text)'):(p.rate<30?'var(--orange)':'var(--green)'))+'">'+p.rate+'%</span></div>'
+    ).join('');
 
   // Expected week bars
   const wc={};
@@ -877,19 +1033,6 @@ function buildDashboard() {
     {name:'B&A+Makeup',val:both,color:'#34d399'},
     {name:'USP 진행',val:usp,color:'#38bdf8'},
   ].map(s=>'<div class="slot-type-item"><div class="st-name">'+s.name+'</div><div class="st-val" style="color:'+s.color+'">'+s.val+'</div></div>').join('');
-
-  // Bottom stats
-  const thisMonth = new Date().toISOString().slice(0,7);
-  const qaTotal  = CREATORS.filter(c=>['Quality','Binding Offered','Bound'].includes(c.stage)).length;
-  const qaPassed = CREATORS.filter(c=>c.bcScore&&c.bcScore.latestResult==='통과').length;
-  const monthRev = CAMPAIGN_LOG.filter(cl=>cl.date&&cl.date.slice(0,7)===thisMonth).reduce((s,cl)=>s+(cl.fee||0),0);
-  document.getElementById('bottom-stats').innerHTML = [
-    {lbl:'신규 Contact', val:CREATORS.filter(c=>c.stage==='Contacting'&&c.stageStart&&c.stageStart.slice(0,7)===thisMonth).length},
-    {lbl:'신규 Bound',   val:CREATORS.filter(c=>c.stage==='Bound'&&c.stageStart&&c.stageStart.slice(0,7)===thisMonth).length},
-    {lbl:'QA 제출',     val:qaTotal},
-    {lbl:'QA 통과율',   val:(qaTotal?Math.round(qaPassed/qaTotal*100):0)+'%'},
-    {lbl:'이번달 수익', val:fmtFee(monthRev)},
-  ].map(s=>'<div class="stat-item"><div class="s-val">'+s.val+'</div><div class="s-lbl">'+s.lbl+'</div></div>').join('');
 
   try { buildDoDTable(); } catch(e) { console.warn('DoD 로드 오류:', e); }
   try { buildOverdueList(); } catch(e) { console.warn('Overdue 로드 오류:', e); }
@@ -1353,7 +1496,7 @@ async function fetchLiveData() {
     const newLog = logRows.slice(1).map(r => {
       const slot = parseInt(r[3]);
       if (isNaN(slot)) return null;
-      return { date: r[0]||'', tiktokId: r[1]||'', type: r[2]||'', slot, fee: parseInt(r[4])||0, campaign: r[5]||'' };
+      return { date: r[0]||'', tiktokId: r[1]||'', type: r[2]||'', slot, fee: parseInt(r[4])||0, campaign: r[5]||'', campStart: r[6]||'' };
     }).filter(Boolean);
 
     // ── BC_Score: 헤더 1행 → 2행(index 1)부터 ──
