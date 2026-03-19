@@ -1496,7 +1496,7 @@ async function fetchLiveData() {
     const newLog = logRows.slice(1).map(r => {
       const slot = parseInt(r[3]);
       if (isNaN(slot)) return null;
-      return { date: r[0]||'', tiktokId: r[1]||'', type: r[2]||'', slot, fee: parseInt(r[4])||0, campaign: r[5]||'', campStart: r[6]||'' };
+      return { date: r[0]||'', tiktokId: r[1]||'', type: r[2]||'', slot, fee: parseInt(String(r[4]||'').replace(/[₩,\s]/g,''))||0, campaign: r[5]||'', campStart: r[6]||'' };
     }).filter(Boolean);
 
     // ── BC_Score: 헤더 1행 → 2행(index 1)부터 ──
